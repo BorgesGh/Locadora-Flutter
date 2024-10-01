@@ -7,16 +7,24 @@ class Botao extends StatelessWidget{
 
   late VoidCallback ao_clicar;
   Widget? texto;
+  Color? cor;
 
-  Botao({super.key, required this.ao_clicar, this.texto});
+  Botao({super.key,
+    required this.ao_clicar,
+    this.texto,
+    this.cor
+  })
+  {
+    cor ??= CONSTANTES.LARANJA;
+  }
   
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: ao_clicar,
-      style: const ButtonStyle(
-        backgroundColor: WidgetStatePropertyAll(CONSTANTES.LARANJA),
-        foregroundColor: WidgetStatePropertyAll(Colors.black)
+      style: ButtonStyle(
+        backgroundColor: WidgetStatePropertyAll(cor),
+        foregroundColor: const WidgetStatePropertyAll(Colors.black)
       ),
 
       child: texto,

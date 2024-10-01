@@ -21,12 +21,14 @@ class _StateAtorCRUD extends State<AtorCRUD>{
 
   double space = 10.0;
 
+  int gambiarra = 3;
+
   String operacao = "Enviar";
 
   final formKey = GlobalKey<FormState>();
 
   final nomeAtorController = TextEditingController();
-  int idController = 0;
+  int idController = -1;
 
   @override
   void initState(){
@@ -62,16 +64,16 @@ class _StateAtorCRUD extends State<AtorCRUD>{
 
                             if(operacao == "Enviar"){
                               setState(() {
-                                ControladorAtor.inserirAtor(nome: nomeAtorController.text, id: 5);
+                                ControladorAtor.inserirAtor(nome: nomeAtorController.text, id: gambiarra++);
                               });
                               nomeAtorController.text = "";
                             }
                             else{
                               setState(() {
                                 ControladorAtor.editarAtor(novoNome: nomeAtorController.text, id: idController);
-                                operacao = "Enviar";
+                                limparNomeEResetarBotao();
                               });
-                              nomeAtorController.text = "";
+                              idController = -1;
                             }
                           }
                         },
@@ -105,7 +107,25 @@ class _StateAtorCRUD extends State<AtorCRUD>{
                  return DataRow(
                    cells: [
                      DataCell(
-                       Text(elemento.nome),
+                       Row(
+                         children: [
+                           Text(elemento.nome),
+                           const SizedBox(width: 10),
+                           Botao(
+                             ao_clicar: (){
+                               setState(() {
+                                 if(idController == elemento.id){
+                                   limparNomeEResetarBotao();
+                                 }
+                                 atores.remove(elemento);
+                               });
+                             },
+                             texto: const Text("Excluir"),
+                             cor: Colors.red,
+
+                           ),
+                         ],
+                       ),
                        showEditIcon: true,
                        onTap: (){
                          nomeAtorController.text = elemento.nome;
@@ -128,5 +148,11 @@ class _StateAtorCRUD extends State<AtorCRUD>{
     );
 
   }
+
+  void limparNomeEResetarBotao(){
+    nomeAtorController.text = "";
+    operacao = "Enviar";
+  }
+
 
 }
