@@ -38,6 +38,8 @@ class MenuLateral extends StatelessWidget{
             title: const Text('Classe'),
             onTap: () {
               Navigator.pop(context);
+              Navigator.pop(context);
+              Navigator.of(context).pushNamed("/classe");
             },
           ),
           ListTile(
@@ -45,6 +47,8 @@ class MenuLateral extends StatelessWidget{
             title: const Text('Diretor'),
             onTap: () {
               Navigator.pop(context);
+              Navigator.pop(context);
+              Navigator.of(context).pushNamed("/diretor");
             },
           ),
         ],

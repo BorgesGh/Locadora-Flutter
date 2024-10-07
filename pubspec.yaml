@@ -39,6 +39,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  card_swiper: ^3.0.1
+  omni_datetime_picker: ^2.0.5
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

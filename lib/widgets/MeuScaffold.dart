@@ -18,7 +18,15 @@ class MeuScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text(texto)),
+        title: Center(
+            child: InkWell(
+              child: Text(texto),
+              onTap: (){
+                Navigator.of(context).pop();
+                Navigator.pushNamed(context, "/");
+              },
+            )
+        ),
         backgroundColor: CONSTANTES.LARANJA,
       ),
       drawer: const MenuLateral(),

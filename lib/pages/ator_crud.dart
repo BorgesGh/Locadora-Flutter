@@ -86,7 +86,7 @@ class _StateAtorCRUD extends State<AtorCRUD>{
                  ),
            SizedBox(height: space),
            Container(
-             width: 300,
+             margin: const EdgeInsets.symmetric(horizontal: 40),
              child: DataTable(
                border: TableBorder.all(
                    width: 1,
@@ -101,6 +101,14 @@ class _StateAtorCRUD extends State<AtorCRUD>{
                    ),
                    headingRowAlignment: MainAxisAlignment.center
                  ),
+                 DataColumn(
+                     label: Text("Opções",
+                       style: TextStyle(
+                         fontSize: 18,
+                       ),
+                     ),
+                     headingRowAlignment: MainAxisAlignment.center
+                 ),
                ],
 
                rows: atores.map((Ator elemento) {
@@ -110,23 +118,8 @@ class _StateAtorCRUD extends State<AtorCRUD>{
                        Row(
                          children: [
                            Text(elemento.nome),
-                           const SizedBox(width: 10),
-                           Botao(
-                             ao_clicar: (){
-                               setState(() {
-                                 if(idController == elemento.id){
-                                   limparNomeEResetarBotao();
-                                 }
-                                 atores.remove(elemento);
-                               });
-                             },
-                             texto: const Text("Excluir"),
-                             cor: Colors.red,
-
-                           ),
                          ],
                        ),
-                       showEditIcon: true,
                        onTap: (){
                          nomeAtorController.text = elemento.nome;
                          idController = elemento.id;
@@ -134,10 +127,24 @@ class _StateAtorCRUD extends State<AtorCRUD>{
                            operacao = "Editar";
 
                          });
-                       }
-
+                       },
+                       showEditIcon: true,
                        // Fazer um Ontap que ao clicar sobre o elemento.
                      ),  // Supondo que 'nome' seja um atributo de 'Ator'
+                   DataCell(
+                     Botao(
+                       ao_clicar: (){
+                         setState(() {
+                           if(idController == elemento.id){
+                             limparNomeEResetarBotao();
+                           }
+                           atores.remove(elemento);
+                         });
+                       },
+                       texto: const Text("Excluir"),
+                       cor: Colors.red,
+                     ),
+                   )
                    ],
                  );
                }).toList(),
