@@ -1,7 +1,7 @@
 
 class Classe{
 
-  late int id;
+  int? id;
   late String nome;
   late double valor;
   late DateTime dataDevolucao;

@@ -1,6 +1,6 @@
 
 class Ator{
-  late int id;
+  int? id;
   late String nome;
 
   Ator({required this.nome, required this.id});

@@ -121,7 +121,7 @@ class _DireitorCRUDState extends State<DiretorCRUD>{
                         showEditIcon: true,
                         onTap: (){
                           nomeDiretorController.text = elemento.nome;
-                          idController = elemento.id;
+                          idController = elemento.id!;
                           setState(() {
                             operacao = "Editar";
 

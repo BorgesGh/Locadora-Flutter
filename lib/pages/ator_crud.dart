@@ -122,7 +122,7 @@ class _StateAtorCRUD extends State<AtorCRUD>{
                        ),
                        onTap: (){
                          nomeAtorController.text = elemento.nome;
-                         idController = elemento.id;
+                         idController = elemento.id!;
                          setState(() {
                            operacao = "Editar";
 

@@ -165,7 +165,7 @@ class _StateClasseCRUD extends State<ClasseCRUD>{
 
                       onTap: (){
                         ControladorClasse.nomeClasseController.text= elemento.nome;
-                        ControladorClasse.idController = elemento.id;
+                        ControladorClasse.idController = elemento.id!;
                         ControladorClasse.dataClasseController.text = elemento.dataDevolucao.toString();
                         ControladorClasse.valorClasseController.text = elemento.valor.toString() ;
 
