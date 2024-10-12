@@ -1,11 +1,12 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:locadora_dw2/controle/ControladorAtor.dart';
 import 'package:locadora_dw2/model/Ator.dart';
+import 'package:locadora_dw2/utils/ResponseEntity.dart';
 import 'package:locadora_dw2/widgets/MeuScaffold.dart';
 import 'package:locadora_dw2/widgets/Botao.dart';
 import 'package:locadora_dw2/widgets/FormArea.dart';
+import 'package:locadora_dw2/widgets/toast.dart';
 
 class AtorCRUD extends StatefulWidget{
 
@@ -17,11 +18,10 @@ class AtorCRUD extends StatefulWidget{
 
 class _StateAtorCRUD extends State<AtorCRUD>{
 
-  List<Ator> atores = ControladorAtor.atores;
+  final _controladorAtor = ControladorAtor();
 
+  late List<Ator> atores;
   double space = 10.0;
-
-  int gambiarra = 3;
 
   String operacao = "Enviar";
 
@@ -33,7 +33,12 @@ class _StateAtorCRUD extends State<AtorCRUD>{
   @override
   void initState(){
     super.initState();
-    //Carregar a lista de Atores...
+    _controladorAtor.getAll();
+  }
+
+
+  @override
+  void dispose() {
   }
 
   @override
@@ -64,14 +69,21 @@ class _StateAtorCRUD extends State<AtorCRUD>{
 
                             if(operacao == "Enviar"){
                               setState(() {
-                                ControladorAtor.inserirAtor(nome: nomeAtorController.text, id: gambiarra++);
+                                _controladorAtor.inserirAtor(nome: nomeAtorController.text);
                               });
                               nomeAtorController.text = "";
                             }
                             else{
                               setState(() {
-                                ControladorAtor.editarAtor(novoNome: nomeAtorController.text, id: idController);
-                                limparNomeEResetarBotao();
+                                try {
+                                  _controladorAtor.editarAtor(
+                                      novoNome: nomeAtorController.text,
+                                      id: idController);
+                                  limparNomeEResetarBotao();
+                                  Toast.mensagemSucesso(titulo: "Editado com sucesso!", context: context);
+                                } on Exception catch (erro){
+                                  Toast.mensagemErro(titulo: "Ocorreu um erro ao editar: ${erro.toString()}", context: context);
+                                }
                               });
                               idController = -1;
                             }
@@ -87,68 +99,79 @@ class _StateAtorCRUD extends State<AtorCRUD>{
            SizedBox(height: space),
            Container(
              margin: const EdgeInsets.symmetric(horizontal: 40),
-             child: DataTable(
-               border: TableBorder.all(
-                   width: 1,
-                   color: Colors.black),
+             child: StreamBuilder<ResponseEntity>(
+               stream: _controladorAtor.fluxo,
+               builder: (context, snapshot) {
 
-               columns: const <DataColumn>[
-                 DataColumn(
-                   label: Text("Nome Ator",
-                     style: TextStyle(
-                       fontSize: 18,
-                     ),
-                   ),
-                   headingRowAlignment: MainAxisAlignment.center
-                 ),
-                 DataColumn(
-                     label: Text("Opções",
-                       style: TextStyle(
-                         fontSize: 18,
+                 if (snapshot.connectionState == ConnectionState.waiting) {
+                   return CircularProgressIndicator(); // Mostra um indicador de carregamento
+                 }
+                 if (snapshot.hasError) {
+                   return Text('Erro ao carregar atores'); // Tratamento de erro
+                 }
+                 if (snapshot.hasData && operacao != "Editar") {
+                   ResponseEntity response = snapshot.data!;
+                   response.resultado is List ? atores = response.resultado : atores.add(response.resultado) ;
+                   // Atualiza a lista de atores
+                 }
+
+                 return DataTable(
+                   columns: const <DataColumn>[
+                     DataColumn(
+                       label: Text(
+                         "Nome Ator",
+                         style: TextStyle(fontSize: 18),
                        ),
+                       headingRowAlignment: MainAxisAlignment.center,
                      ),
-                     headingRowAlignment: MainAxisAlignment.center
-                 ),
-               ],
-
-               rows: atores.map((Ator elemento) {
-                 return DataRow(
-                   cells: [
-                     DataCell(
-                       Row(
-                         children: [
-                           Text(elemento.nome),
-                         ],
+                     DataColumn(
+                       label: Text(
+                         "Opções",
+                         style: TextStyle(fontSize: 18),
                        ),
-                       onTap: (){
-                         nomeAtorController.text = elemento.nome;
-                         idController = elemento.id!;
-                         setState(() {
-                           operacao = "Editar";
-
-                         });
-                       },
-                       showEditIcon: true,
-                       // Fazer um Ontap que ao clicar sobre o elemento.
-                     ),  // Supondo que 'nome' seja um atributo de 'Ator'
-                   DataCell(
-                     Botao(
-                       ao_clicar: (){
-                         setState(() {
-                           if(idController == elemento.id){
-                             limparNomeEResetarBotao();
-                           }
-                           atores.remove(elemento);
-                         });
-                       },
-                       texto: const Text("Excluir"),
-                       cor: Colors.red,
+                       headingRowAlignment: MainAxisAlignment.center,
                      ),
-                   )
                    ],
+                   rows: atores.map((Ator elemento) {
+                     return DataRow(
+                       cells: [
+                         DataCell(
+                           Row(
+                             children: [
+                               Text(elemento.nome),
+                             ],
+                           ),
+                           onTap: () {
+                             nomeAtorController.text = elemento.nome;
+                             idController = elemento.id!;
+                             setState(() {
+                               operacao = "Editar";
+                             });
+                           },
+                           showEditIcon: true,
+                         ),
+                         DataCell(
+                           Botao(
+                             ao_clicar: () {
+                               setState(() {
+                                 if (idController == elemento.id) {
+                                   limparNomeEResetarBotao();
+                                 }
+                                 atores.remove(elemento);
+                                 _controladorAtor.excluir(elemento);
+                                 Toast.mensagemSucesso(titulo: "Excluido com sucesso!", context: context);
+                               });
+                             },
+                             texto: const Text("Excluir"),
+                             cor: Colors.red,
+                           ),
+                         ),
+                       ],
+                     );
+                   }).toList(),
                  );
-               }).toList(),
-             ),
+               },
+             )
            )
          ],
        ),

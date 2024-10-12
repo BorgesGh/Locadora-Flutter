@@ -1,29 +1,62 @@
 
+import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
+import 'package:locadora_dw2/model/Ator.dart';
+import 'package:locadora_dw2/service/AtorService.dart';
+import 'package:locadora_dw2/utils/ResponseEntity.dart';
+
 import '../model/Ator.dart';
 
 class ControladorAtor{
 
-  static List<Ator> atores = [Ator(nome: "Ricardo", id: 1),Ator(nome: "Ghabriel", id: 2)];
+  final _controladorStream = StreamController<ResponseEntity>();
+  Stream<ResponseEntity> get fluxo => _controladorStream.stream;
 
-  static void inserirAtor({required String nome, required int id}){
-    Ator novoAtor = Ator(nome: nome, id: id);
-    atores.add(novoAtor);
+  late AtorService atorService;
+  late List<Ator> _atores;
+  late BuildContext context;
 
-    // Chama um serviço de criação na API
+
+  ControladorAtor(){
+    atorService = AtorService();
+  }
+
+  Future<ResponseEntity<List<Ator>>> getAll() async{
+
+    ResponseEntity<List<Ator>> responseEntity = await atorService.getAll();
+
+    _atores = responseEntity.resultado ?? []; // Caso o resultado venha vazio...
+
+    _controladorStream.add(responseEntity);
+
+    return responseEntity;
 
   }
 
-  static void editarAtor({required String novoNome, required int id}){
+  Future<void> inserirAtor({required String nome, int? id}) async {
+    Ator novoAtor = Ator(nome: nome);
+    ResponseEntity<Ator> ator = await atorService.inserir(novoAtor);
+
+    _controladorStream.add(ator);
+
+  }
+
+  Future<void> editarAtor({required String novoNome, required int id}) async {
 
     Ator? alvo;
-    for(Ator ator in atores){
-      if(ator.id == id) {
-        alvo = ator;
-      }
-    }
 
-    alvo!.nome = novoNome;
+    alvo = _atores.map((ator) => ator.id == id) as Ator?;
 
-    //Chama um serviço de Editar da API
+    ResponseEntity<Ator> newAtor = await atorService.update(alvo!);
+
+    alvo?.nome = novoNome;
   }
+
+  Future<void> excluir (Ator ator) async{
+
+    atorService.delete(ator);
+
+  }
+
 }

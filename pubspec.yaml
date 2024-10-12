@@ -41,6 +41,8 @@ dev_dependencies:
     sdk: flutter
   card_swiper: ^3.0.1
   omni_datetime_picker: ^2.0.5
+  http: ^1.2.2
+  toastification: ^2.2.0
 
 
   # The "flutter_lints" package below contains a set of recommended lints to
