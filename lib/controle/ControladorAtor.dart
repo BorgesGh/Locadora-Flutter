@@ -7,6 +7,7 @@ import 'package:locadora_dw2/service/AtorService.dart';
 import 'package:locadora_dw2/utils/ResponseEntity.dart';
 
 import '../model/Ator.dart';
+import '../widgets/toast.dart';
 
 class ControladorAtor{
 
@@ -22,7 +23,7 @@ class ControladorAtor{
     atorService = AtorService();
   }
 
-  Future<ResponseEntity<List<Ator>>> getAll() async{
+  Future<ResponseEntity<List<Ator>>> getAtores() async{
 
     ResponseEntity<List<Ator>> responseEntity = await atorService.getAll();
 
@@ -43,17 +44,31 @@ class ControladorAtor{
   }
 
   Future<void> editarAtor({required String novoNome, required int id}) async {
-
     Ator? alvo;
 
-    alvo = _atores.map((ator) => ator.id == id) as Ator?;
+    // alvo = _atores.map((ator) => ator.id == id) as Ator?;
 
-    ResponseEntity<Ator> newAtor = await atorService.update(alvo!);
+    for (Ator ator in _atores) {
+      if (ator.id == id) {
+        alvo = ator;
+      }
+    }
 
-    alvo?.nome = novoNome;
+    if (alvo != null) {
+      // Atualiza o nome do ator
+      alvo.nome = novoNome;
+
+      // Enviar o ator atualizado para o serviço
+      ResponseEntity<Ator> response = await atorService.update(alvo);
+
+      if (response.sucesso) {
+        // Atualizar a lista local com o ator modificado
+        _controladorStream.add(ResponseEntity(_atores));
+      }
+    }
   }
 
-  Future<void> excluir (Ator ator) async{
+  Future<void> excluirAtor (Ator ator) async{
 
     atorService.delete(ator);
 

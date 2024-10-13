@@ -33,7 +33,7 @@ class _StateAtorCRUD extends State<AtorCRUD>{
   @override
   void initState(){
     super.initState();
-    _controladorAtor.getAll();
+    _controladorAtor.getAtores();
   }
 
 
@@ -111,9 +111,31 @@ class _StateAtorCRUD extends State<AtorCRUD>{
                  }
                  if (snapshot.hasData && operacao != "Editar") {
                    ResponseEntity response = snapshot.data!;
-                   response.resultado is List ? atores = response.resultado : atores.add(response.resultado) ;
+                   if(response.resultado is List){
+                     print("StreamBuilder: Era uma lista!");
+                     atores = response.resultado;
+
+                   } else {
+                     print("StreamBuilder: Era um elemento!");
+
+                     // Verifique se o ator já existe na lista antes de adicionar
+                     Ator novoAtor = response.resultado;
+                     bool atorJaExiste = atores.any((ator) => ator.id == novoAtor.id);
+
+                     if (idController != -1) {
+                       // Substituir o ator editado na lista
+                       atores[idController] = novoAtor;
+
+                     } else if(!atorJaExiste) {
+                       // Adicionar um novo ator se não estiver na lista
+                       atores.add(novoAtor);
+                     }
+                   }
+
+                   // response.resultado is List ? atores = response.resultado : atores.add(response.resultado) ;
                    // Atualiza a lista de atores
                  }
+                 print("StreamBuilder: ${snapshot.data!.resultado}");
 
                  return DataTable(
                    columns: const <DataColumn>[
@@ -158,7 +180,7 @@ class _StateAtorCRUD extends State<AtorCRUD>{
                                    limparNomeEResetarBotao();
                                  }
                                  atores.remove(elemento);
-                                 _controladorAtor.excluir(elemento);
+                                 _controladorAtor.excluirAtor(elemento);
                                  Toast.mensagemSucesso(titulo: "Excluido com sucesso!", context: context);
                                });
                              },

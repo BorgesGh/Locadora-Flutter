@@ -7,5 +7,5 @@ class CONSTANTES {
   static const VERMELHO = Color.fromRGBO(235,110,110,1);
   static const CINZA = Color.fromRGBO(112,111,107,1);
 
-  static const url = "http://localhost:8080";
+  static const urlServer = "http://localhost:8080";
 }
