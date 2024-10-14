@@ -6,9 +6,6 @@ import 'package:locadora_dw2/model/Ator.dart';
 import 'package:locadora_dw2/service/AtorService.dart';
 import 'package:locadora_dw2/utils/ResponseEntity.dart';
 
-import '../model/Ator.dart';
-import '../widgets/toast.dart';
-
 class ControladorAtor{
 
   final _controladorStream = StreamController<ResponseEntity>();
@@ -55,10 +52,8 @@ class ControladorAtor{
     }
 
     if (alvo != null) {
-      // Atualiza o nome do ator
       alvo.nome = novoNome;
 
-      // Enviar o ator atualizado para o serviço
       ResponseEntity<Ator> response = await atorService.update(alvo);
 
       if (response.sucesso) {

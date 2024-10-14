@@ -106,9 +106,18 @@ class _StateAtorCRUD extends State<AtorCRUD>{
                  if (snapshot.connectionState == ConnectionState.waiting) {
                    return CircularProgressIndicator(); // Mostra um indicador de carregamento
                  }
+                 if(snapshot.data?.resultado == null){
+                   return const Center(child: Text("Erro ao acessar o Backend!"));
+
+                 }
+
                  if (snapshot.hasError) {
                    return Text('Erro ao carregar atores'); // Tratamento de erro
                  }
+                 if(!snapshot.hasData){
+                   atores = [];
+                 }
+
                  if (snapshot.hasData && operacao != "Editar") {
                    ResponseEntity response = snapshot.data!;
                    if(response.resultado is List){
@@ -138,6 +147,19 @@ class _StateAtorCRUD extends State<AtorCRUD>{
                  print("StreamBuilder: ${snapshot.data!.resultado}");
 
                  return DataTable(
+                   border: TableBorder(
+                     borderRadius: BorderRadius.circular(10),
+                   ),
+                   headingRowColor: const WidgetStatePropertyAll(Colors.white),
+                   decoration: const BoxDecoration(
+                     boxShadow: [
+                       BoxShadow(
+                         color: Colors.black,
+                         blurRadius: 10,
+                         offset: Offset(4, 6),
+                       )
+                     ]
+                   ),
                    columns: const <DataColumn>[
                      DataColumn(
                        label: Text(
@@ -156,6 +178,7 @@ class _StateAtorCRUD extends State<AtorCRUD>{
                    ],
                    rows: atores.map((Ator elemento) {
                      return DataRow(
+                       color: const WidgetStatePropertyAll(Colors.white),
                        cells: [
                          DataCell(
                            Row(

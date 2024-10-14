@@ -6,8 +6,16 @@ class Diretor{
 
   Diretor({this.id,required this.nome});
 
-  Diretor.fromMap(Map<String,dynamic> map){
-    id = map["id"];
-    nome = map["nome"];
+  factory Diretor.fromMap(Map<String,dynamic> map){
+    return Diretor(nome: map['nome'], id: map['id'] );
+  }
+
+  Map<String,dynamic> toMap(){
+    final Map<String,dynamic> map = Map<String, dynamic>();
+    map['nome'] = this.nome;
+
+    if(id != null) map['id'] = this.id;
+
+    return map;
   }
 }
