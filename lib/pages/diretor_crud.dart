@@ -101,7 +101,7 @@ class _DireitorCRUDState extends State<DiretorCRUD>{
           SizedBox(height: space),
           Container(
               margin: const EdgeInsets.symmetric(horizontal: 40),
-              child: StreamBuilder<ResponseEntity>(
+              child: StreamBuilder<List<Diretor>>(
                 stream: _controladorDiretor.fluxo,
                 builder: (context, snapshot) {
 
@@ -109,42 +109,15 @@ class _DireitorCRUDState extends State<DiretorCRUD>{
                     return const CircularProgressIndicator(); // Mostra um indicador de carregamento
                   }
 
-                  if(snapshot.data?.resultado == null){
-                    return const Center(child: Text("Erro ao acessar o Backend!"));
-
-                  }
-
                   if (snapshot.hasError) {
                     return Text('Erro ao carregar Diretores'); // Tratamento de erro
-
                   }
-                  if (snapshot.hasData && operacao != "Editar") {
-                    ResponseEntity response = snapshot.data!;
-                    if(response.resultado is List){
-                      // print("StreamBuilder: Era uma lista!");
-                      diretores = response.resultado;
 
-                    } else {
-                      // print("StreamBuilder: Era um elemento!");
-
-                      // Verifique se o Diretor já existe na lista antes de adicionar
-                      Diretor novoDiretor = response.resultado;
-                      bool DiretorJaExiste = diretores.any((Diretor) => Diretor.id == novoDiretor.id);
-
-                      if (idController != -1) {
-                        // Substituir o Diretor editado na lista
-                        diretores[idController] = novoDiretor;
-
-                      } else if(!DiretorJaExiste) {
-                        // Adicionar um novo Diretor se não estiver na lista
-                        diretores.add(novoDiretor);
-                      }
-                    }
-
-                    // response.resultado is List ? Diretores = response.resultado : Diretores.add(response.resultado) ;
-                    // Atualiza a lista de Diretores
+                  if(!snapshot.hasData){
+                    return const Center(child: Text("Erro ao acessar o Backend!"));
                   }
-                  // print("StreamBuilder: ${snapshot.data!.resultado}");
+
+                  diretores = snapshot.data!;
 
                   return DataTable(
                     columns: const <DataColumn>[

@@ -8,6 +8,9 @@ import 'package:locadora_dw2/widgets/MeuScaffold.dart';
 import 'package:locadora_dw2/widgets/Botao.dart';
 import 'package:locadora_dw2/widgets/FormArea.dart';
 
+import '../model/Diretor.dart';
+import '../widgets/toast.dart';
+
 
 
 class ClasseCRUD extends StatefulWidget{
@@ -15,16 +18,15 @@ class ClasseCRUD extends StatefulWidget{
   @override
   State<StatefulWidget> createState() => _StateClasseCRUD();
 
-
 }
 
 class _StateClasseCRUD extends State<ClasseCRUD>{
 
-  List<Classe> Classees = ControladorClasse.classes;
+  final _controladorClasse = ControladorClasse();
+
+  List<Classe> classes = [];
 
   double space = 10.0;
-
-  int gambiarra = 3;
 
   String operacao = "Enviar";
 
@@ -33,7 +35,7 @@ class _StateClasseCRUD extends State<ClasseCRUD>{
   @override
   void initState(){
     super.initState();
-    //Carregar a lista de Classees...
+    _controladorClasse.getClasses();
   }
 
   @override
@@ -57,17 +59,17 @@ class _StateClasseCRUD extends State<ClasseCRUD>{
 
                       FormArea("Nome do Classe",
                         tipo: TextInputType.text,
-                        controlador: ControladorClasse.nomeClasseController,
+                        controlador: _controladorClasse.nomeClasseController,
                       ),
                       SizedBox(height: space),
 
                       FormArea("Valor",
                         tipo: TextInputType.number,
-                        controlador: ControladorClasse.valorClasseController,
+                        controlador: _controladorClasse.valorClasseController,
                       ),
                       SizedBox(height: space),
 
-                      BotaoData(ControladorClasse.dataClasseController),
+                      BotaoData(streamDate: _controladorClasse.streamDate, controladorDate: _controladorClasse.dataClasseController),
                       SizedBox(height: space),
 
 
@@ -77,29 +79,28 @@ class _StateClasseCRUD extends State<ClasseCRUD>{
 
                               if(operacao == "Enviar"){
                                 setState(() {
-                                  ControladorClasse.inserirClasse(
-                                    id: gambiarra++,
-                                    nome: ControladorClasse.nomeClasseController.text,
-                                    valor: double.parse(ControladorClasse.valorClasseController.text),
-                                    data: DateTime.parse(ControladorClasse.dataClasseController.text),
+                                  _controladorClasse.inserirClasse(
+                                    nome: _controladorClasse.nomeClasseController.text,
+                                    valor: double.parse(_controladorClasse.valorClasseController.text),
+                                    dataDevolucao: DateTime.parse(_controladorClasse.dataClasseController.text),
                                   );
                                 });
-                                ControladorClasse.nomeClasseController.text = "";
+                                _controladorClasse.nomeClasseController.text = "";
                               }
 
                               else{
                                 setState(() {
-                                  ControladorClasse.editarClasse(
-                                    novoNome: ControladorClasse.nomeClasseController.text,
-                                    id: ControladorClasse.idController,
-                                    data: DateTime.parse(ControladorClasse.dataClasseController.text),
-                                    valor: double.parse(ControladorClasse.valorClasseController.text)
+                                  _controladorClasse.editarClasse(
+                                    novoNome: _controladorClasse.nomeClasseController.text,
+                                    id: _controladorClasse.idController,
+                                    data: DateTime.parse(_controladorClasse.dataClasseController.text),
+                                    valor: double.parse(_controladorClasse.valorClasseController.text)
 
                                   );
                                   limparNomeEResetarBotao();
 
                                 });
-                                ControladorClasse.idController = -1;
+                                _controladorClasse.idController = -1;
                               }
                             }
                           },
@@ -112,105 +113,88 @@ class _StateClasseCRUD extends State<ClasseCRUD>{
           ),
           SizedBox(height: space),
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: 40),
-            child: DataTable(
-              border: TableBorder.all(
-                  width: 1,
-                  color: Colors.black),
+              margin: const EdgeInsets.symmetric(horizontal: 40),
+              child: StreamBuilder<List<Classe>>(
+                stream: _controladorClasse.fluxo,
+                builder: (context, snapshot) {
 
-              columns: const <DataColumn>[
-                DataColumn(
-                    label: Text("Nome Classe",
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                    headingRowAlignment: MainAxisAlignment.center
-                ),
-                DataColumn(
-                    label: Text("Valor",
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                    headingRowAlignment: MainAxisAlignment.center
-                ),
-                DataColumn(
-                    label: Text("Data",
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                    headingRowAlignment: MainAxisAlignment.center
-                ),
-                DataColumn(
-                    label: Text("Opções",
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                    headingRowAlignment: MainAxisAlignment.center
-                ),
-              ],
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator(); // Mostra um indicador de carregamento
+                  }
 
-              rows: Classees.map((Classe elemento) {
-                return DataRow(
-                  cells: [
-                    DataCell(
-                      Row(
-                        children: [
-                          Text(elemento.nome),
+                  if (snapshot.hasError) {
+                    return Text('Erro ao carregar Diretores'); // Tratamento de erro
+                  }
+
+                  if(!snapshot.hasData){
+                    return const Center(child: Text("Erro ao acessar o Backend!"));
+                  }
+
+                  classes = snapshot.data!;
+
+                  return DataTable(
+                    columns: const <DataColumn>[
+                      DataColumn(
+                        label: Text(
+                          "Nome Diretor",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        headingRowAlignment: MainAxisAlignment.center,
+                      ),
+                      DataColumn(
+                        label: Text(
+                          "Opções",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        headingRowAlignment: MainAxisAlignment.center,
+                      ),
+                    ],
+                    rows: classes.map((Classe elemento) {
+                      return DataRow(
+                        cells: [
+                          DataCell(
+                            Row(
+                              children: [
+                                Text(elemento.nome),
+                              ],
+                            ),
+                            onTap: () {
+                              _controladorClasse.nomeClasseController.text = elemento.nome;
+                              _controladorClasse.valorClasseController.text = "${elemento.valor}";
+                              _controladorClasse.idController = elemento.id!;
+                              _controladorClasse.dataClasseController.text = elemento.dataDevolucao.toString();
+
+                              _controladorClasse.streamDate.add(elemento.dataDevolucao);
+
+                              setState(() {
+                                operacao = "Editar";
+                              });
+                            },
+                            showEditIcon: true,
+                          ),
+                          DataCell(
+                            Botao(
+                              ao_clicar: () {
+                                setState(() {
+                                  if (_controladorClasse.idController == elemento.id) {
+                                    limparNomeEResetarBotao();
+                                  }
+
+                                  _controladorClasse.excluirClasse(elemento);
+                                  classes.remove(elemento);
+                                  Toast.mensagemSucesso(titulo: "Excluido com sucesso!", context: context);
+                                });
+                              },
+                              texto: const Text("Excluir"),
+                              cor: Colors.red,
+                            ),
+                          ),
                         ],
-                      ),
-
-                      onTap: (){
-                        ControladorClasse.nomeClasseController.text= elemento.nome;
-                        ControladorClasse.idController = elemento.id!;
-                        ControladorClasse.dataClasseController.text = elemento.dataDevolucao.toString();
-                        ControladorClasse.valorClasseController.text = elemento.valor.toString() ;
-
-                        setState(() {
-                          operacao = "Editar";
-
-                        });
-                      },
-                      showEditIcon: true,
-                      // Fazer um Ontap que ao clicar sobre o elemento.
-                    ),
-
-                    DataCell(
-                      Row(
-                        children: [
-                          Text("${elemento.valor}"),
-                        ],
-                      )
-                    ),
-
-                    DataCell(
-                        Row(
-                          children: [
-                            Text(ControladorClasse.formatarDateTime(elemento.dataDevolucao)),
-                          ],
-                        )
-                    ),// Supondo que 'nome' seja um atributo de 'Classe'
-                    DataCell(
-                      Botao(
-                        ao_clicar: (){
-                          setState(() {
-                            if(ControladorClasse.idController == elemento.id){
-                              limparNomeEResetarBotao();
-                            }
-                            Classees.remove(elemento);
-                          });
-                        },
-                        texto: const Text("Excluir"),
-                        cor: Colors.red,
-                      ),
-                    )
-                  ],
-                );
-              }).toList(),
-            ),
+                      );
+                    }).toList(),
+                  );
+                },
+              )
           )
         ],
       ),
@@ -219,10 +203,9 @@ class _StateClasseCRUD extends State<ClasseCRUD>{
   }
 
   void limparNomeEResetarBotao(){
-    ControladorClasse.nomeClasseController.text = "";
-    ControladorClasse.valorClasseController.text = "";
+    _controladorClasse.nomeClasseController.text = "";
+    _controladorClasse.valorClasseController.text = "";
+
     operacao = "Enviar";
   }
-
-
 }

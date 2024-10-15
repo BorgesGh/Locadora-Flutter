@@ -1,51 +1,90 @@
 
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
+import 'package:locadora_dw2/model/Classe.dart';
 
 import '../model/Classe.dart';
+import '../model/Classe.dart';
+import '../model/Classe.dart';
+import '../service/ClasseService.dart';
+import '../utils/ResponseEntity.dart';
 
 class ControladorClasse{
 
-  static TextEditingController nomeClasseController = TextEditingController();
+  final _controladorStream = StreamController<List<Classe>>();
+  final streamDate = StreamController<DateTime>();
 
-  static TextEditingController valorClasseController = TextEditingController();
+  Stream<List<Classe>> get fluxo => _controladorStream.stream;
 
-  static TextEditingController dataClasseController = TextEditingController();
+  late ClasseService classeService;
+  late List<Classe> _classes;
+  late BuildContext context;
 
-  //poderia fazer um stream....
+  final nomeClasseController = TextEditingController();
+  final valorClasseController = TextEditingController();
+  final dataClasseController = TextEditingController();
 
-  static int idController = -1;
+  int idController = -1;
 
 
-  static const nomenclatura = "Classe";
+  ControladorClasse(){
+    classeService = ClasseService();
+  }
 
-  static List<Classe> classes = [Classe(nome: "Normal", id: 1, valor: 12.25,dataDevolucao: DateTime.utc(2024)),
-    Classe(nome: "Urgente", id: 2, valor: 8.15,dataDevolucao: DateTime.utc(2024))];
+  Future<ResponseEntity<List<Classe>>> getClasses() async{
 
-  static void inserirClasse({required String nome, required int id, required DateTime data, required double valor}){
-    Classe novoClasse = Classe(nome: nome, id: id, dataDevolucao: data,valor: valor);
-    classes.add(novoClasse);
+    ResponseEntity<List<Classe>> responseEntity = await classeService.getAll();
 
-    // Chama um serviço de criação na API
+    _classes = responseEntity.resultado ?? []; // Caso o resultado venha vazio...
+
+    _controladorStream.add(_classes);
+
+    return responseEntity;
 
   }
 
-  static void editarClasse({required String novoNome, required int id, required DateTime data, required double valor}){
+  Future<void> inserirClasse({required String nome, int? id, required double valor, required DateTime dataDevolucao}) async {
+    var novoClasse = Classe(id: id, nome: nome, valor: valor, dataDevolucao: dataDevolucao);
+    ResponseEntity<Classe> classe = await classeService.inserir(novoClasse);
 
+    Classe? dir = classe.resultado;
+
+    _classes.add(dir!);
+
+    _controladorStream.add(_classes);
+
+  }
+
+  Future<void> editarClasse({required String novoNome, required int id, required double valor, required DateTime data}) async {
     Classe? alvo;
-    for(Classe classe in classes){
-      if(classe.id == id) {
+
+    // alvo = _Classees.map((Classe) => Classe.id == id) as Classe?;
+
+    for (Classe classe in _classes) {
+      if (classe.id == id) {
         alvo = classe;
       }
     }
 
-    alvo!.nome = novoNome;
-    alvo.dataDevolucao = data;
-    alvo.valor = valor;
+    if (alvo != null) {
 
-    //Chama um serviço de Editar da API
+      alvo.nome = novoNome;
+      alvo.valor = valor;
+      alvo.dataDevolucao = data;
+
+      ResponseEntity<Classe> response = await classeService.update(alvo);
+
+      if (response.sucesso) {
+        // Atualizar a lista local com o Classe modificado
+        _controladorStream.add(_classes);
+      }
+    }
   }
 
-  static String formatarDateTime(DateTime diaHora){
-    return "${diaHora.day}-${diaHora.month}-${diaHora.year}";
+  Future<void> excluirClasse (Classe classe) async{
+
+    classeService.delete(classe);
+
   }
 }

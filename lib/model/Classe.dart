@@ -13,7 +13,21 @@ class Classe{
     id = map["id"];
     nome = map["nome"];
     valor = map["valor"];
-    dataDevolucao = map["dataDevolucao"];
+    dataDevolucao = DateTime.parse(map["dataDevolucao"]);
+  }
+
+  Map<String, dynamic> toMap(){
+    final Map<String,dynamic> map = Map<String,dynamic>();
+
+    map['nome'] = this.nome;
+    map['valor'] = this.valor;
+    map['dataDevolucao'] = this.dataDevolucao.toIso8601String();
+
+    if(id != null){
+      map['id'] = this.id;
+    }
+
+    return map;
   }
 
 }

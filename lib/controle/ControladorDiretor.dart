@@ -9,8 +9,8 @@ import '../utils/ResponseEntity.dart';
 class ControladorDiretor{
 
 
-  final _controladorStream = StreamController<ResponseEntity>();
-  Stream<ResponseEntity> get fluxo => _controladorStream.stream;
+  final _controladorStream = StreamController<List<Diretor>>();
+  Stream<List<Diretor>> get fluxo => _controladorStream.stream;
 
   late DiretorService diretorService;
   late List<Diretor> _diretores;
@@ -27,7 +27,7 @@ class ControladorDiretor{
 
     _diretores = responseEntity.resultado ?? []; // Caso o resultado venha vazio...
 
-    _controladorStream.add(responseEntity);
+    _controladorStream.add(_diretores);
 
     return responseEntity;
 
@@ -37,7 +37,11 @@ class ControladorDiretor{
     var novoDiretor = Diretor(nome: nome);
     ResponseEntity<Diretor> diretor = await diretorService.inserir(novoDiretor);
 
-    _controladorStream.add(diretor);
+    Diretor? dir = diretor.resultado;
+
+    _diretores.add(dir!);
+
+    _controladorStream.add(_diretores);
 
   }
 
@@ -59,7 +63,7 @@ class ControladorDiretor{
 
       if (response.sucesso) {
         // Atualizar a lista local com o Diretor modificado
-        _controladorStream.add(ResponseEntity(_diretores));
+        _controladorStream.add(_diretores);
       }
     }
   }

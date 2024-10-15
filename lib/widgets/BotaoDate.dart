@@ -1,5 +1,7 @@
 
 
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:locadora_dw2/controle/ControladorClasse.dart';
@@ -9,55 +11,76 @@ import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 class BotaoData extends StatefulWidget{
 
   @override
-  State<StatefulWidget> createState() => _BotaoDataSate(controladorDate);
+  State<StatefulWidget> createState() => _BotaoDataSate(streamDate,controladorDate);
 
-  BotaoData(this.controladorDate, {super.key});
+
+  BotaoData({required this.controladorDate, this.streamDate, super.key});
 
   TextEditingController controladorDate;
+  final streamDate;
 
 }
+
 class _BotaoDataSate extends State<BotaoData>{
 
-  DateTime? diaHora;
+  _BotaoDataSate(this._streamDate, this.controladorDate);
+
+  StreamController<DateTime> _streamDate;
   TextEditingController controladorDate;
 
-  _BotaoDataSate(this.controladorDate){
-    diaHora = DateTime.now();
-    controladorDate.text = diaHora.toString();
-  }
+  DateTime? diaHora;
+  DateTime? horaEscolhida;
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-        onPressed: () async {
 
-          diaHora = (await showOmniDateTimePicker(
-            context: context,
-            initialDate: DateTime.now(),
-            type: OmniDateTimePickerType.date,
+    return StreamBuilder<DateTime>(
+      stream: _streamDate.stream,
+      initialData: DateTime.now(),
 
-          ));
+      builder: (context, snapshot) {
 
-          diaHora ??= DateTime.now();
+        if(horaEscolhida == null) {
+          diaHora = snapshot.data;
+        }
 
-          setState((){
-            controladorDate.text = diaHora.toString();
+        return ElevatedButton(
+            onPressed: () async {
 
-          });
-        },
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Flexible(
-              flex: 2,
-              child: Text(ControladorClasse.formatarDateTime(diaHora!)),
+              diaHora = (await showOmniDateTimePicker(
+                context: context,
+                initialDate: DateTime.now(),
+                type: OmniDateTimePickerType.date,
+
+              ));
+
+              controladorDate.text = diaHora.toString();
+
+              setState(() {
+                horaEscolhida = diaHora;
+              });
+
+
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  flex: 2,
+                  child: Text(formatarDateTime(diaHora!)),
+                ),
+                const Flexible(
+                  flex: 1,
+                  child: Icon(Icons.calendar_month_outlined))
+              ],
             ),
-            const Flexible(
-              flex: 1,
-              child: Icon(Icons.calendar_month_outlined))
-          ],
-        ),
+        );
+      }
     );
+  }
+
+  String formatarDateTime(DateTime diaHora){
+    return "${diaHora.day}/${diaHora.month}/${diaHora.year}";
   }
 
 }

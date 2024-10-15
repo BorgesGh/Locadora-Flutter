@@ -33,6 +33,7 @@ class _StateAtorCRUD extends State<AtorCRUD>{
   @override
   void initState(){
     super.initState();
+    atores = _controladorAtor.atores;
     _controladorAtor.getAtores();
   }
 
@@ -99,67 +100,30 @@ class _StateAtorCRUD extends State<AtorCRUD>{
            SizedBox(height: space),
            Container(
              margin: const EdgeInsets.symmetric(horizontal: 40),
-             child: StreamBuilder<ResponseEntity>(
+             child: StreamBuilder<List<Ator>>(
                stream: _controladorAtor.fluxo,
                builder: (context, snapshot) {
 
                  if (snapshot.connectionState == ConnectionState.waiting) {
                    return CircularProgressIndicator(); // Mostra um indicador de carregamento
-                 }
-                 if(snapshot.data?.resultado == null){
-                   return const Center(child: Text("Erro ao acessar o Backend!"));
 
                  }
-
                  if (snapshot.hasError) {
                    return Text('Erro ao carregar atores'); // Tratamento de erro
+
                  }
                  if(!snapshot.hasData){
-                   atores = [];
+                   return Center(child: Text("Erro ao acessar o Backend"),);
+
                  }
 
-                 if (snapshot.hasData && operacao != "Editar") {
-                   ResponseEntity response = snapshot.data!;
-                   if(response.resultado is List){
-                     print("StreamBuilder: Era uma lista!");
-                     atores = response.resultado;
-
-                   } else {
-                     print("StreamBuilder: Era um elemento!");
-
-                     // Verifique se o ator já existe na lista antes de adicionar
-                     Ator novoAtor = response.resultado;
-                     bool atorJaExiste = atores.any((ator) => ator.id == novoAtor.id);
-
-                     if (idController != -1) {
-                       // Substituir o ator editado na lista
-                       atores[idController] = novoAtor;
-
-                     } else if(!atorJaExiste) {
-                       // Adicionar um novo ator se não estiver na lista
-                       atores.add(novoAtor);
-                     }
-                   }
-
-                   // response.resultado is List ? atores = response.resultado : atores.add(response.resultado) ;
-                   // Atualiza a lista de atores
-                 }
-                 print("StreamBuilder: ${snapshot.data!.resultado}");
+                 atores = snapshot.data!;
 
                  return DataTable(
                    border: TableBorder(
                      borderRadius: BorderRadius.circular(10),
                    ),
                    headingRowColor: const WidgetStatePropertyAll(Colors.white),
-                   decoration: const BoxDecoration(
-                     boxShadow: [
-                       BoxShadow(
-                         color: Colors.black,
-                         blurRadius: 10,
-                         offset: Offset(4, 6),
-                       )
-                     ]
-                   ),
                    columns: const <DataColumn>[
                      DataColumn(
                        label: Text(

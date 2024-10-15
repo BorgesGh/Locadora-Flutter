@@ -8,11 +8,18 @@ import 'package:locadora_dw2/utils/ResponseEntity.dart';
 
 class ControladorAtor{
 
-  final _controladorStream = StreamController<ResponseEntity>();
-  Stream<ResponseEntity> get fluxo => _controladorStream.stream;
+  final _controladorStream = StreamController<List<Ator>>(); // Aqui é lista de atores
+
+  //Enviar os atores TODOS no add() do Stream. Não apenas 1 indivíduo.
+
+
+  Stream<List<Ator>> get fluxo => _controladorStream.stream;
 
   late AtorService atorService;
-  late List<Ator> _atores;
+  List<Ator> _atores = [];
+
+  List<Ator> get atores => _atores;
+
   late BuildContext context;
 
 
@@ -26,7 +33,7 @@ class ControladorAtor{
 
     _atores = responseEntity.resultado ?? []; // Caso o resultado venha vazio...
 
-    _controladorStream.add(responseEntity);
+    _controladorStream.add(_atores);
 
     return responseEntity;
 
@@ -34,16 +41,18 @@ class ControladorAtor{
 
   Future<void> inserirAtor({required String nome, int? id}) async {
     Ator novoAtor = Ator(nome: nome);
-    ResponseEntity<Ator> ator = await atorService.inserir(novoAtor);
+    ResponseEntity<Ator> atorRes = await atorService.inserir(novoAtor);
 
-    _controladorStream.add(ator);
+    Ator? ator = atorRes.resultado;
+
+    _atores.add(ator!);
+
+    _controladorStream.add(_atores);
 
   }
 
   Future<void> editarAtor({required String novoNome, required int id}) async {
     Ator? alvo;
-
-    // alvo = _atores.map((ator) => ator.id == id) as Ator?;
 
     for (Ator ator in _atores) {
       if (ator.id == id) {
@@ -58,13 +67,12 @@ class ControladorAtor{
 
       if (response.sucesso) {
         // Atualizar a lista local com o ator modificado
-        _controladorStream.add(ResponseEntity(_atores));
+        _controladorStream.add(_atores);
       }
     }
   }
 
   Future<void> excluirAtor (Ator ator) async{
-
     atorService.delete(ator);
 
   }
