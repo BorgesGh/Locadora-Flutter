@@ -9,6 +9,7 @@ import 'package:locadora_dw2/widgets/Botao.dart';
 import 'package:locadora_dw2/widgets/FormArea.dart';
 
 import '../model/Diretor.dart';
+import '../widgets/FormAreaNumeros.dart';
 import '../widgets/toast.dart';
 
 
@@ -39,172 +40,211 @@ class _StateClasseCRUD extends State<ClasseCRUD>{
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MeuScaffold(
       texto: "Cadastro de Classe",
-      body: Column(
-        children: [
-          Form(
-            key: formKey,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(top: 30),
-                  width: 300,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Form(
+              key: formKey,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 30),
+                    width: 300,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
 
 
-                      FormArea("Nome do Classe",
-                        tipo: TextInputType.text,
-                        controlador: _controladorClasse.nomeClasseController,
-                      ),
-                      SizedBox(height: space),
-
-                      FormArea("Valor",
-                        tipo: TextInputType.number,
-                        controlador: _controladorClasse.valorClasseController,
-                      ),
-                      SizedBox(height: space),
-
-                      BotaoData(streamDate: _controladorClasse.streamDate, controladorDate: _controladorClasse.dataClasseController),
-                      SizedBox(height: space),
-
-
-                      Botao(
-                          ao_clicar: (){
-                            if(formKey.currentState!.validate()){
-
-                              if(operacao == "Enviar"){
-                                setState(() {
-                                  _controladorClasse.inserirClasse(
-                                    nome: _controladorClasse.nomeClasseController.text,
-                                    valor: double.parse(_controladorClasse.valorClasseController.text),
-                                    dataDevolucao: DateTime.parse(_controladorClasse.dataClasseController.text),
-                                  );
-                                });
-                                _controladorClasse.nomeClasseController.text = "";
-                              }
-
-                              else{
-                                setState(() {
-                                  _controladorClasse.editarClasse(
-                                    novoNome: _controladorClasse.nomeClasseController.text,
-                                    id: _controladorClasse.idController,
-                                    data: DateTime.parse(_controladorClasse.dataClasseController.text),
-                                    valor: double.parse(_controladorClasse.valorClasseController.text)
-
-                                  );
-                                  limparNomeEResetarBotao();
-
-                                });
-                                _controladorClasse.idController = -1;
-                              }
-                            }
-                          },
-                          texto: Text(operacao)),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: space),
-          Container(
-              margin: const EdgeInsets.symmetric(horizontal: 40),
-              child: StreamBuilder<List<Classe>>(
-                stream: _controladorClasse.fluxo,
-                builder: (context, snapshot) {
-
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator(); // Mostra um indicador de carregamento
-                  }
-
-                  if (snapshot.hasError) {
-                    return Text('Erro ao carregar Diretores'); // Tratamento de erro
-                  }
-
-                  if(!snapshot.hasData){
-                    return const Center(child: Text("Erro ao acessar o Backend!"));
-                  }
-
-                  classes = snapshot.data!;
-
-                  return DataTable(
-                    columns: const <DataColumn>[
-                      DataColumn(
-                        label: Text(
-                          "Nome Diretor",
-                          style: TextStyle(fontSize: 18),
+                        FormArea("Nome do Classe",
+                          tipo: TextInputType.text,
+                          controlador: _controladorClasse.nomeClasseController,
                         ),
-                        headingRowAlignment: MainAxisAlignment.center,
-                      ),
-                      DataColumn(
-                        label: Text(
-                          "Opções",
-                          style: TextStyle(fontSize: 18),
+                        SizedBox(height: space),
+
+                        FormAreaNumeros("Valor",
+                          tipo: TextInputType.number,
+                          controlador: _controladorClasse.valorClasseController,
                         ),
-                        headingRowAlignment: MainAxisAlignment.center,
-                      ),
-                    ],
-                    rows: classes.map((Classe elemento) {
-                      return DataRow(
-                        cells: [
-                          DataCell(
-                            Row(
-                              children: [
-                                Text(elemento.nome),
-                              ],
-                            ),
-                            onTap: () {
-                              _controladorClasse.nomeClasseController.text = elemento.nome;
-                              _controladorClasse.valorClasseController.text = "${elemento.valor}";
-                              _controladorClasse.idController = elemento.id!;
-                              _controladorClasse.dataClasseController.text = elemento.dataDevolucao.toString();
+                        SizedBox(height: space),
 
-                              _controladorClasse.streamDate.add(elemento.dataDevolucao);
+                        BotaoData(streamDate: _controladorClasse.streamDate, controladorDate: _controladorClasse.dataClasseController),
+                        SizedBox(height: space),
 
-                              setState(() {
-                                operacao = "Editar";
-                              });
-                            },
-                            showEditIcon: true,
-                          ),
-                          DataCell(
-                            Botao(
-                              ao_clicar: () {
-                                setState(() {
-                                  if (_controladorClasse.idController == elemento.id) {
+
+                        Botao(
+                            ao_clicar: (){
+                              if(formKey.currentState!.validate()){
+
+                                if(operacao == "Enviar"){
+                                  setState(() {
+                                    _controladorClasse.inserirClasse(
+                                      nome: _controladorClasse.nomeClasseController.text,
+                                      valor: double.parse(_controladorClasse.valorClasseController.text),
+                                      dataDevolucao: DateTime.parse(_controladorClasse.dataClasseController.text),
+                                    );
                                     limparNomeEResetarBotao();
-                                  }
+                                  });
+                                  _controladorClasse.nomeClasseController.text = "";
+                                }
 
-                                  _controladorClasse.excluirClasse(elemento);
-                                  classes.remove(elemento);
-                                  Toast.mensagemSucesso(titulo: "Excluido com sucesso!", context: context);
+                                else{
+                                  setState(() {
+                                    _controladorClasse.editarClasse(
+                                      novoNome: _controladorClasse.nomeClasseController.text,
+                                      id: _controladorClasse.idController,
+                                      data: DateTime.parse(_controladorClasse.dataClasseController.text),
+                                      valor: double.parse(_controladorClasse.valorClasseController.text)
+
+                                    );
+                                    limparNomeEResetarBotao();
+                                    _controladorClasse.dataClasseController.text = DateTime.now().toString();
+
+                                  });
+                                  _controladorClasse.idController = -1;
+                                }
+                              }
+                            },
+                            texto: Text(operacao)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: space),
+            Container(
+                margin: const EdgeInsets.symmetric(horizontal: 40),
+                child: StreamBuilder<List<Classe>>(
+                  stream: _controladorClasse.fluxo,
+                  builder: (context, snapshot) {
+        
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator(); // Mostra um indicador de carregamento
+                    }
+        
+                    if (snapshot.hasError) {
+                      return Text('Erro ao carregar Diretores'); // Tratamento de erro
+                    }
+        
+                    if(!snapshot.hasData){
+                      return const Center(child: Text("Erro ao acessar o Backend!"));
+                    }
+        
+                    classes = snapshot.data!;
+        
+                    return DataTable(
+                      columns: const <DataColumn>[
+                        DataColumn(
+                          label: Text(
+                            "Nome Classe",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          headingRowAlignment: MainAxisAlignment.center,
+                        ),
+                        DataColumn(
+                          label: Text(
+                            "Valor",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          headingRowAlignment: MainAxisAlignment.center,
+                        ),
+                        DataColumn(
+                          label: Text(
+                            "Data de Entrega",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          headingRowAlignment: MainAxisAlignment.center,
+                        ),
+                        DataColumn(
+                          label: Text(
+                            "Opções",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          headingRowAlignment: MainAxisAlignment.center,
+                        ),
+                      ],
+                      rows: classes.map((Classe elemento) {
+                        return DataRow(
+                          cells: [
+                            DataCell(
+                              Row(
+                                children: [
+                                  Text(elemento.nome),
+                                ],
+                              ),
+                              onTap: () {
+                                _controladorClasse.nomeClasseController.text = elemento.nome;
+                                _controladorClasse.valorClasseController.text = "${elemento.valor}";
+                                _controladorClasse.idController = elemento.id!;
+                                _controladorClasse.dataClasseController.text = elemento.dataDevolucao.toString();
+        
+                                _controladorClasse.streamDate.add(elemento.dataDevolucao);
+        
+                                setState(() {
+                                  operacao = "Editar";
                                 });
                               },
-                              texto: const Text("Excluir"),
-                              cor: Colors.red,
+                              showEditIcon: true,
                             ),
-                          ),
-                        ],
-                      );
-                    }).toList(),
-                  );
-                },
-              )
-          )
-        ],
+                            DataCell(
+                              Row(
+                                children: [
+                                  Text(elemento.valor.toString()),
+                                ],
+                              )
+                            ),
+                            DataCell(
+                                Row(
+                                  children: [
+                                    Text(BotaoData.formatarDateTime(elemento.dataDevolucao))
+                                  ],
+                                )
+                            ),
+                            DataCell(
+                              Botao(
+                                ao_clicar: () {
+                                  setState(() {
+                                    if (_controladorClasse.idController == elemento.id) {
+                                      limparNomeEResetarBotao();
+                                    }
+        
+                                    _controladorClasse.excluirClasse(elemento);
+                                    classes.remove(elemento);
+                                    Toast.mensagemSucesso(titulo: "Excluido com sucesso!", context: context);
+                                  });
+                                },
+                                texto: const Text("Excluir"),
+                                cor: Colors.red,
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    );
+                  },
+                )
+            )
+          ],
+        ),
       ),
     );
 
   }
 
   void limparNomeEResetarBotao(){
+
+    final valor = 0;
     _controladorClasse.nomeClasseController.text = "";
-    _controladorClasse.valorClasseController.text = "";
+    _controladorClasse.valorClasseController.text = valor.toString();
 
     operacao = "Enviar";
   }

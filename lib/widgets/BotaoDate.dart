@@ -19,6 +19,10 @@ class BotaoData extends StatefulWidget{
   TextEditingController controladorDate;
   final streamDate;
 
+  static String formatarDateTime(DateTime diaHora){
+    return "${diaHora.day}/${diaHora.month}/${diaHora.year}";
+  }
+
 }
 
 class _BotaoDataSate extends State<BotaoData>{
@@ -42,6 +46,7 @@ class _BotaoDataSate extends State<BotaoData>{
 
         if(horaEscolhida == null) {
           diaHora = snapshot.data;
+          controladorDate.text = diaHora.toString();
         }
 
         return ElevatedButton(
@@ -51,6 +56,7 @@ class _BotaoDataSate extends State<BotaoData>{
                 context: context,
                 initialDate: DateTime.now(),
                 type: OmniDateTimePickerType.date,
+                firstDate: DateTime.now(),
 
               ));
 
@@ -67,7 +73,7 @@ class _BotaoDataSate extends State<BotaoData>{
               children: [
                 Flexible(
                   flex: 2,
-                  child: Text(formatarDateTime(diaHora!)),
+                  child: Text(BotaoData.formatarDateTime(diaHora!)),
                 ),
                 const Flexible(
                   flex: 1,
@@ -79,8 +85,6 @@ class _BotaoDataSate extends State<BotaoData>{
     );
   }
 
-  String formatarDateTime(DateTime diaHora){
-    return "${diaHora.day}/${diaHora.month}/${diaHora.year}";
-  }
+
 
 }
