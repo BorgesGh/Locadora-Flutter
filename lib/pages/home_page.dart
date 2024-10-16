@@ -22,21 +22,6 @@ class HomePage extends StatelessWidget{
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.only(topLeft: Radius.circular(2),topRight: Radius.circular(2))
                   ),
-                  // child: Swiper(
-                  //   pagination: const SwiperPagination(),
-                  //   itemCount: imagens.length,
-                  //   itemHeight: 400,
-                  //   itemWidth: 500,
-                  //   viewportFraction: 0.8,
-                  //   scale: 0.9,
-                  //   controller: SwiperController(),
-                  //   layout: SwiperLayout.TINDER,
-                  //   scrollDirection: Axis.horizontal,
-                  //   itemBuilder: (context,index){
-                  //     return Image.asset(imagens[index],
-                  //     fit: BoxFit.fill);
-                  //   },
-                  // ),
                 )
               ],
             ),
