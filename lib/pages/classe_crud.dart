@@ -132,7 +132,7 @@ class _StateClasseCRUD extends State<ClasseCRUD>{
                     }
         
                     if (snapshot.hasError) {
-                      return Text('Erro ao carregar Diretores'); // Tratamento de erro
+                      return Text('Erro ao carregar Classes'); // Tratamento de erro
                     }
         
                     if(!snapshot.hasData){

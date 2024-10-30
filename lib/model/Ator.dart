@@ -10,7 +10,6 @@ class Ator{
 
   }
 
-  @override
   Map<String,dynamic> toMap(){
     final Map<String,dynamic> map = Map<String, dynamic>();
     map['nome'] = this.nome;

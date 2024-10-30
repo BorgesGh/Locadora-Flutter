@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:locadora_dw2/controle/ControladorDiretor.dart';
@@ -100,7 +98,11 @@ class _DireitorCRUDState extends State<DiretorCRUD>{
                 ],
               ),
             ),
+
+
             SizedBox(height: space),
+
+
             Container(
                 margin: const EdgeInsets.symmetric(horizontal: 40),
                 child: StreamBuilder<List<Diretor>>(
