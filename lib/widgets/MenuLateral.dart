@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:locadora_dw2/routes.dart';
+import 'package:go_router/go_router.dart';
 import '../utils/CONSTANTES.dart';
 
 class MenuLateral extends StatelessWidget{
@@ -23,41 +25,33 @@ class MenuLateral extends StatelessWidget{
           ),
           ListTile(
             leading: const ImageIcon(
-              AssetImage("icons/ator_128.png"),
+              AssetImage("assets/icons/ator_128.png"),
             ),
 
             title: const Text('Ator'),
             onTap: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
-              Navigator.of(context).pushNamed("/ator");
+              context.goNamed(Routes.Ator.name);
             },
           ),
           ListTile(
             leading: const Icon(Icons.account_circle),
             title: const Text('Classe'),
             onTap: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
-              Navigator.of(context).pushNamed("/classe");
+              context.goNamed(Routes.Classe.name);
             },
           ),
           ListTile(
             leading: const Icon(Icons.settings),
             title: const Text('Diretor'),
             onTap: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
-              Navigator.of(context).pushNamed("/diretor");
+              context.goNamed(Routes.Diretor.name);
             },
           ),
           ListTile(
             leading: const Icon(Icons.settings),
             title: const Text('Titulo'),
             onTap: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
-              Navigator.of(context).pushNamed("/titulo");
+              context.goNamed(Routes.Titulo.name);
             },
           ),
         ],

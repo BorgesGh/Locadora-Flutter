@@ -2,6 +2,7 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:locadora_dw2/model/Titulo.dart';
 import 'package:locadora_dw2/service/ClasseService.dart';
 import 'package:locadora_dw2/service/TituloService.dart';
@@ -82,8 +83,8 @@ class ControladorTitulo{
 
   }
 
-  VoidCallback getOnTap(){
-    return
+  List<String> getColluns(){
+    return [""];
   }
 
 }

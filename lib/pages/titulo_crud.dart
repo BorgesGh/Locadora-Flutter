@@ -1,24 +1,27 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:locadora_dw2/widgets/ComboBox.dart';
+import 'package:locadora_dw2/model/Diretor.dart';
+import 'package:locadora_dw2/widgets/FormAreaNumeros.dart';
 import 'package:locadora_dw2/widgets/toast.dart';
 import '../controle/ControladorTitulo.dart';
+import '../model/Ator.dart';
 import '../model/Titulo.dart';
 import '../widgets/Botao.dart';
 import '../widgets/FormArea.dart';
 import '../widgets/MeuScaffold.dart';
+import 'package:fluent_ui/fluent_ui.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class TituloCRUD extends StatefulWidget{
+
   const TituloCRUD({super.key});
 
   @override
-  State<StatefulWidget> createState() => _DireitorCRUDState();
+  State<StatefulWidget> createState() => _TituloCRUDState();
 }
 
-class _DireitorCRUDState extends State<TituloCRUD>{
-
+class _TituloCRUDState extends State<TituloCRUD>{
   final _controladorTitulo = ControladorTitulo();
-
+  
   double space = 10.0;
 
   @override
@@ -31,217 +34,186 @@ class _DireitorCRUDState extends State<TituloCRUD>{
   void dispose() {
     super.dispose();
   }
-
-
+  
   @override
   Widget build(BuildContext context) {
     return MeuScaffold(
       texto: "Cadastro de Titulo",
-      body: SingleChildScrollView(
+      body: Container(
+        decoration: BoxDecoration(
+          border: Border.all(width: 1)
+        ),
+        margin: const EdgeInsets.only(top: 20,left: 15,right: 15),
         child: Column(
 
-        children: [
-          Form(
-            key: _controladorTitulo.formKey,
+          children: [
+            Flexible(
+              child: Form(
+                key: _controladorTitulo.formKey,
 
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(top: 30, left: 50,right: 50),
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(width: 1)
+                  ),
+                  height: 300,
+                  margin: const EdgeInsets.only(top: 10,left: 15,right: 15),
 
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+
                     children: [
+                      Expanded(
 
-                      Column(
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 30, left: 10,right: 10),
 
-                        children: [
-                          FormArea("Nome do Titulo",
-                            tipo: TextInputType.text,
-                            controlador: _controladorTitulo.nameTituloController,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+
+                              Expanded(
+                                flex: 2,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+
+                                  children: [
+                                    FormArea("Nome do Titulo",
+                                      tipo: TextInputType.text,
+                                      controlador: _controladorTitulo.nameTituloController,
+                                    ),
+                                    FormAreaNumeros("Ano",
+                                      tipo: TextInputType.number,
+                                      controlador: _controladorTitulo.yearController,
+                                    ),
+                                    FormArea("Sinopse",
+                                      tipo: TextInputType.text,
+                                      controlador: _controladorTitulo.sinopseController,
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              Expanded(
+                                flex: 2,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+
+                                    Flexible(
+                                      child: ComboBox(
+                                        items: _controladorTitulo.diretores.map((Diretor elemento) {
+                                          return ComboBoxItem<Diretor>(
+                                            value: elemento,
+                                            child: Text(elemento.nome),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ),
+
+                                    Flexible(
+                                      child: ComboBox(
+                                        items: _controladorTitulo.titulos.map((Titulo elemento) {
+                                          return ComboBoxItem<Titulo>(
+                                            value: elemento,
+                                            child: Text(elemento.nome),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    )
+
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  child: MultiSelectDialogField(
+                                    searchable: true,
+                                    items: _controladorTitulo.atores.map((Ator ator) {
+                                      return MultiSelectItem(
+                                          ator,
+                                          ator.nome
+                                      );
+                                    }).toList(),
+                                    onConfirm: ( confirmeds ) {
+                                      _controladorTitulo.selectedAtors = confirmeds as List<Ator>;
+                                    },
+                                    initialValue: [], 
+                                    buttonText: const Text("Selecione os Atores"),
+                                    title: const Text("Atores"),
+                                  ),
+                                )
+                              ),
+
+                              SizedBox(height: space),
+                            ],
                           ),
-                          FormArea("Ano",
-                            tipo: TextInputType.number,
-                            controlador: _controladorTitulo.yearController,
-                          ),
-                          FormArea("Sinopse",
-                            tipo: TextInputType.text,
-                            controlador: _controladorTitulo.sinopseController,
-                          ),
-                        ],
-                      ),
-
-                      Column(
-
-                        children: [
-                          ComboBox( // Não vai ser uma comboBox... Vai ser lista!
-                            textoDica: "Escolha um Ator",
-                            selected: _controladorTitulo.selectedAtors,
-                            items: _controladorTitulo.atores
-                          ),
-                          ComboBox(
-                              textoDica: "Escolha um Diretor",
-                              selected: _controladorTitulo.selectedDiretor,
-                              items: _controladorTitulo.diretores
-                          ),
-
-                          ComboBox(
-                              textoDica: "Escolha uma Classe",
-                              selected: _controladorTitulo.selectedClasse,
-                              items: _controladorTitulo.classes
-                          ),
-                        ],
-                      ),
-
-                      SizedBox(height: space),
-                      Botao(
-                          ao_clicar: (){
-                            if(_controladorTitulo.formKey.currentState!.validate()){
-
-                              if(Operacoes.Enviar.name == _controladorTitulo.operationController){
-                                setState(() {
-                                  _controladorTitulo.inserirTitulo(
-                                      tituloNew: Titulo(
-                                          nome: _controladorTitulo.nameTituloController.text,
-                                          ano: int.parse(_controladorTitulo.yearController.text),
-                                          sinopse: _controladorTitulo.sinopseController.text,
-
-                                          categoria: _controladorTitulo.selectedCategoria!,
-                                          diretor: _controladorTitulo.selectedDiretor!,
-                                          classe: _controladorTitulo.selectedClasse!,
-                                          atores: _controladorTitulo.selectedAtors!
-                                      )
-                                  );
-                                });
-                              }
-                              else{
-                                setState(() {
-                                  try {
-                                    _controladorTitulo.editarTitulo(
-                                        titulo:Titulo(
-                                          id: _controladorTitulo.idController,
-                                          nome: _controladorTitulo.nameTituloController.text,
-                                          ano: int.parse(_controladorTitulo.yearController.text),
-                                          sinopse: _controladorTitulo.sinopseController.text,
-
-                                          categoria: _controladorTitulo.selectedCategoria!,
-                                          diretor: _controladorTitulo.selectedDiretor!,
-                                          classe: _controladorTitulo.selectedClasse!,
-                                          atores: _controladorTitulo.selectedAtors!
-                                      )
-                                    );
-                                    limparNomeEResetarBotao();
-                                    Toast.mensagemSucesso(titulo: "Editado com sucesso!", context: context);
-                                  } on Exception catch (erro){
-                                    Toast.mensagemErro(titulo: "Ocorreu um erro ao editar: ${erro.toString()}", context: context);
-                                  }
-                                });
-                                _controladorTitulo.idController = -1;
-                              }
-                            }
-                          },
-                          texto: Text(_controladorTitulo.operationController.toString())
+                        ),
                       ),
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
+            Flexible(
+              child: Botao(
+                  ao_clicar: (){
+                    if(_controladorTitulo.formKey.currentState!.validate()){
 
-          SizedBox(height: space),
+                      if(Operacoes.Enviar.name == _controladorTitulo.operationController){
+                        setState(() {
+                          _controladorTitulo.inserirTitulo(
+                              tituloNew: Titulo(
+                                  nome: _controladorTitulo.nameTituloController.text,
+                                  ano: int.parse(_controladorTitulo.yearController.text),
+                                  sinopse: _controladorTitulo.sinopseController.text,
 
+                                  categoria: _controladorTitulo.selectedCategoria!,
+                                  diretor: _controladorTitulo.selectedDiretor!,
+                                  classe: _controladorTitulo.selectedClasse!,
+                                  atores: _controladorTitulo.selectedAtors!
+                              )
+                          );
+                        });
+                      }
+                      else{
+                        setState(() {
+                          try {
+                            _controladorTitulo.editarTitulo(
+                                titulo:Titulo(
+                                    id: _controladorTitulo.idController,
+                                    nome: _controladorTitulo.nameTituloController.text,
+                                    ano: int.parse(_controladorTitulo.yearController.text),
+                                    sinopse: _controladorTitulo.sinopseController.text,
 
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 40),
-            child: StreamBuilder<List<Titulo>>(
-              stream: _controladorTitulo.fluxo,
-              builder: (context, snapshot) {
-
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator(); // Mostra um indicador de carregamento
-                }
-
-                if (snapshot.hasError) {
-                  return Text('Erro ao carregar Diretores'); // Tratamento de erro
-                }
-
-                if(!snapshot.hasData){
-                  return const Center(child: Text("Erro ao acessar o Backend!"));
-                }
-
-                _controladorTitulo.titulos = snapshot.data!;
-
-                return DataTable(
-                  columns: const <DataColumn>[
-                    DataColumn(
-                      label: Text(
-                        "Nome Titulo",
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      headingRowAlignment: MainAxisAlignment.center,
-                    ),
-                    DataColumn(
-                      label: Text(
-                        "Opções",
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      headingRowAlignment: MainAxisAlignment.center,
-                    ),
-                  ],
-                  rows: _controladorTitulo.titulos.map((Titulo elemento) {
-                    return DataRow(
-                      cells: [
-                        DataCell(
-                          Row(
-                            children: [
-                              Text(elemento.nome),
-                            ],
-                          ),
-                          onTap: () {
-                            nomeDiretorController.text = elemento.nome;
-                            idController = elemento.id!;
-                            setState(() {
-                              operacao = "Editar";
-                            });
-                          },
-                          showEditIcon: true,
-                        ),
-                        DataCell(
-                          Botao(
-                            ao_clicar: () {
-                              setState(() {
-                                if (idController == elemento.id) {
-                                  limparNomeEResetarBotao();
-                                }
-                                diretores.remove(elemento);
-                                _controladorDiretor.excluirDiretor(elemento);
-                                Toast.mensagemSucesso(titulo: "Excluido com sucesso!", context: context);
-                              });
-                            },
-                            texto: const Text("Excluir"),
-                            cor: Colors.red,
-                          ),
-                        ),
-                      ],
-                    );
-                  }).toList(),
-                );
-              },
-            )
-          )
-        ],
+                                    categoria: _controladorTitulo.selectedCategoria!,
+                                    diretor: _controladorTitulo.selectedDiretor!,
+                                    classe: _controladorTitulo.selectedClasse!,
+                                    atores: _controladorTitulo.selectedAtors!
+                                )
+                            );
+                            limparNomeEResetarBotao();
+                            Toast.mensagemSucesso(titulo: "Editado com sucesso!", context: context);
+                          } on Exception catch (erro){
+                            Toast.mensagemErro(titulo: "Ocorreu um erro ao editar: ${erro.toString()}", context: context);
+                          }
+                        });
+                        _controladorTitulo.idController = -1;
+                      }
+                    }
+                  },
+                  texto: Text(_controladorTitulo.operationController.toString())
+              ),
+            ),
+          ],
+        ),
       ),
-    ),
-    );
+  );
 
   }
 
   void limparNomeEResetarBotao(){
-    nomeDiretorController.text = "";
-    operacao = "Enviar";
+    _controladorTitulo.nameTituloController.text = "";
+    _controladorTitulo.operationController = Operacoes.Enviar.name;
   }
 }
 
