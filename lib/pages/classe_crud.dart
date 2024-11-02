@@ -142,9 +142,12 @@ class _StateClasseCRUD extends State<ClasseCRUD>{
                     classes = snapshot.data!;
         
                     return DataTable(
+                      columnSpacing: 2,
+
                       columns: const <DataColumn>[
                         DataColumn(
                           label: Text(
+                            overflow: TextOverflow.ellipsis,
                             "Nome Classe",
                             style: TextStyle(fontSize: 18),
                           ),
@@ -159,6 +162,7 @@ class _StateClasseCRUD extends State<ClasseCRUD>{
                         ),
                         DataColumn(
                           label: Text(
+                            overflow: TextOverflow.ellipsis,
                             "Data de Entrega",
                             style: TextStyle(fontSize: 18),
                           ),
