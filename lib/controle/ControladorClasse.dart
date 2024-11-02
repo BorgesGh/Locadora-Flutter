@@ -18,7 +18,7 @@ class ControladorClasse{
   Stream<List<Classe>> get fluxo => _controladorStream.stream;
 
   late ClasseService classeService;
-  late List<Classe> _classes;
+  late List<Classe> classes = [];
   late BuildContext context;
 
   final nomeClasseController = TextEditingController();
@@ -32,27 +32,27 @@ class ControladorClasse{
     classeService = ClasseService();
   }
 
-  Future<ResponseEntity<List<Classe>>> getClasses() async{
+  Future<List<Classe>> getClasses() async{
 
     ResponseEntity<List<Classe>> responseEntity = await classeService.getAll();
 
-    _classes = responseEntity.resultado ?? []; // Caso o resultado venha vazio...
+    classes = responseEntity.resultado ?? []; // Caso o resultado venha vazio...
 
-    _controladorStream.add(_classes);
+    _controladorStream.add(classes);
 
-    return responseEntity;
+    return classes;
 
   }
 
   Future<void> inserirClasse({required String nome, int? id, required double valor, required DateTime dataDevolucao}) async {
-    var novoClasse = Classe(id: id, nome: nome, valor: valor, dataDevolucao: dataDevolucao);
+    var novoClasse = Classe(idClasse: id, nome: nome, valor: valor, dataDevolucao: dataDevolucao);
     ResponseEntity<Classe> classe = await classeService.inserir(novoClasse);
 
     Classe? dir = classe.resultado;
 
-    _classes.add(dir!);
+    classes.add(dir!);
 
-    _controladorStream.add(_classes);
+    _controladorStream.add(classes);
 
   }
 
@@ -61,8 +61,8 @@ class ControladorClasse{
 
     // alvo = _Classees.map((Classe) => Classe.id == id) as Classe?;
 
-    for (Classe classe in _classes) {
-      if (classe.id == id) {
+    for (Classe classe in classes) {
+      if (classe.idClasse == id) {
         alvo = classe;
       }
     }
@@ -77,14 +77,14 @@ class ControladorClasse{
 
       if (response.sucesso) {
         // Atualizar a lista local com o Classe modificado
-        _controladorStream.add(_classes);
+        _controladorStream.add(classes);
       }
     }
   }
 
-  Future<void> excluirClasse (Classe classe) async{
+  Future<ResponseEntity> excluirClasse (Classe classe) async{
 
-    classeService.delete(classe);
+    return classeService.delete(classe);
 
   }
 }

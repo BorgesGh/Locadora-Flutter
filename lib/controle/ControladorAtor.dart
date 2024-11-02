@@ -16,9 +16,7 @@ class ControladorAtor{
   Stream<List<Ator>> get fluxo => _controladorStream.stream;
 
   late AtorService atorService;
-  List<Ator> _atores = [];
-
-  List<Ator> get atores => _atores;
+  List<Ator> atores = [];
 
   late BuildContext context;
 
@@ -27,15 +25,15 @@ class ControladorAtor{
     atorService = AtorService();
   }
 
-  Future<ResponseEntity<List<Ator>>> getAtores() async{
+  Future<List<Ator>> getAtores() async{
 
     ResponseEntity<List<Ator>> responseEntity = await atorService.getAll();
 
-    _atores = responseEntity.resultado ?? []; // Caso o resultado venha vazio...
+    atores = responseEntity.resultado ?? []; // Caso o resultado venha vazio...
 
-    _controladorStream.add(_atores);
+    _controladorStream.add(atores);
 
-    return responseEntity;
+    return atores;
 
   }
 
@@ -45,17 +43,17 @@ class ControladorAtor{
 
     Ator? ator = atorRes.resultado;
 
-    _atores.add(ator!);
+    atores.add(ator!);
 
-    _controladorStream.add(_atores);
+    _controladorStream.add(atores);
 
   }
 
   Future<void> editarAtor({required String novoNome, required int id}) async {
     Ator? alvo;
 
-    for (Ator ator in _atores) {
-      if (ator.id == id) {
+    for (Ator ator in atores) {
+      if (ator.idAtor == id) {
         alvo = ator;
       }
     }
@@ -67,14 +65,13 @@ class ControladorAtor{
 
       if (response.sucesso) {
         // Atualizar a lista local com o ator modificado
-        _controladorStream.add(_atores);
+        _controladorStream.add(atores);
       }
     }
   }
 
-  Future<void> excluirAtor (Ator ator) async{
-    atorService.delete(ator);
-
+  Future<ResponseEntity> excluirAtor (Ator ator) async{
+    return atorService.delete(ator);
   }
 
 }

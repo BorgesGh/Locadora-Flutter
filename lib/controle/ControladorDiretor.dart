@@ -13,7 +13,7 @@ class ControladorDiretor{
   Stream<List<Diretor>> get fluxo => _controladorStream.stream;
 
   late DiretorService diretorService;
-  late List<Diretor> _diretores;
+  late List<Diretor> diretores = [];
   late BuildContext context;
 
 
@@ -21,15 +21,15 @@ class ControladorDiretor{
     diretorService = DiretorService();
   }
 
-  Future<ResponseEntity<List<Diretor>>> getDiretores() async{
+  Future<List<Diretor>> getDiretores() async{
 
     ResponseEntity<List<Diretor>> responseEntity = await diretorService.getAll();
 
-    _diretores = responseEntity.resultado ?? []; // Caso o resultado venha vazio...
+    diretores = responseEntity.resultado ?? []; // Caso o resultado venha vazio...
 
-    _controladorStream.add(_diretores);
+    _controladorStream.add(diretores);
 
-    return responseEntity;
+    return diretores;
 
   }
 
@@ -39,19 +39,19 @@ class ControladorDiretor{
 
     Diretor? dir = diretor.resultado;
 
-    _diretores.add(dir!);
+    diretores.add(dir!);
 
-    _controladorStream.add(_diretores);
+    _controladorStream.add(diretores);
 
   }
 
   Future<void> editarDiretor({required String novoNome, required int id}) async {
     Diretor? alvo;
 
-    // alvo = _Diretores.map((Diretor) => Diretor.id == id) as Diretor?;
+    // alvo = diretores.map((Diretor) => Diretor.id == id) as Diretor?;
 
-    for (Diretor diretor in _diretores) {
-      if (diretor.id == id) {
+    for (Diretor diretor in diretores) {
+      if (diretor.idDiretor == id) {
         alvo = diretor;
       }
     }
@@ -63,14 +63,14 @@ class ControladorDiretor{
 
       if (response.sucesso) {
         // Atualizar a lista local com o Diretor modificado
-        _controladorStream.add(_diretores);
+        _controladorStream.add(diretores);
       }
     }
   }
 
-  Future<void> excluirDiretor (Diretor diretor) async{
+  Future<ResponseEntity> excluirDiretor (Diretor diretor) async{
 
-    diretorService.delete(diretor);
+    return diretorService.delete(diretor);
 
   }
 }
