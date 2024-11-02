@@ -9,7 +9,7 @@ import 'Classe.dart';
 class Titulo {
 
 
-  int? id;
+  int? idTitulo;
   late String nome;
   late int ano;
   late String sinopse;
@@ -20,7 +20,7 @@ class Titulo {
   late Classe classe;
 
   Titulo({
-    this.id,
+    this.idTitulo,
     required this.nome,
     required this.ano,
     required this.sinopse,
@@ -31,15 +31,15 @@ class Titulo {
   });
 
   Titulo.fromMap(Map<String,dynamic> map){
-    id = map['id'];
+    idTitulo = map['idTitulo'];
     nome = map['nome'];
     ano = map['ano'];
     sinopse = map['sinopse'];
     categoria = map['categoria'];
 
-    atores = map['atores'] as List<Ator>;
-    diretor = map['diretor'] as Diretor;
-    classe = map['classe'] as Classe;
+    atores = (map['atores'] as List).map((item) => Ator.fromMap(item)).toList();
+    diretor =   Diretor.fromMap(map['diretor']);
+    classe = Classe.fromMap(map['classe']);
 
   }
 
@@ -51,12 +51,12 @@ class Titulo {
     map['sinopse'] = sinopse;
     map['categoria'] = categoria;
 
-    map['atores'] = atores;
-    map['diretor'] = diretor;
-    map['classe'] = classe;
+    map['atores'] = atores.map((ator) => ator.toMap()).toList();
+    map['diretor'] = diretor.toMap();
+    map['classe'] = classe.toMap();
 
-    if(id != null){
-      map['id'] = id;
+    if(idTitulo != null){
+      map['idTitulo'] = idTitulo;
     }
     return map;
   }

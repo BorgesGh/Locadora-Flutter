@@ -1,16 +1,16 @@
 
 class Classe{
 
-  int? id;
+  int? idClasse;
   late String nome;
   late double valor;
   late DateTime dataDevolucao;
 
-  Classe({ required this.id,required this.nome,required this.valor,required this.dataDevolucao});
+  Classe({ required this.idClasse,required this.nome,required this.valor,required this.dataDevolucao});
 
   Classe.fromMap(Map<String,dynamic> map){
 
-    id = map["id"];
+    idClasse = map["idClasse"];
     nome = map["nome"];
     valor = map["valor"];
     dataDevolucao = DateTime.parse(map["dataDevolucao"]);
@@ -23,11 +23,15 @@ class Classe{
     map['valor'] = this.valor;
     map['dataDevolucao'] = this.dataDevolucao.toIso8601String();
 
-    if(id != null){
-      map['id'] = this.id;
+    if(idClasse != null){
+      map['idClasse'] = this.idClasse;
     }
 
     return map;
   }
 
+  @override
+  String toString() {
+    return nome;
+  }
 }
