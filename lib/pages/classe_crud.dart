@@ -188,7 +188,7 @@ class _StateClasseCRUD extends State<ClasseCRUD>{
                               onTap: () {
                                 _controladorClasse.nomeClasseController.text = elemento.nome;
                                 _controladorClasse.valorClasseController.text = "${elemento.valor}";
-                                _controladorClasse.idController = elemento.id!;
+                                _controladorClasse.idController = elemento.idClasse!;
                                 _controladorClasse.dataClasseController.text = elemento.dataDevolucao.toString();
         
                                 _controladorClasse.streamDate.add(elemento.dataDevolucao);
@@ -215,16 +215,26 @@ class _StateClasseCRUD extends State<ClasseCRUD>{
                             ),
                             DataCell(
                               Botao(
-                                ao_clicar: () {
-                                  setState(() {
-                                    if (_controladorClasse.idController == elemento.id) {
-                                      limparNomeEResetarBotao();
-                                    }
-        
-                                    _controladorClasse.excluirClasse(elemento);
-                                    classes.remove(elemento);
-                                    Toast.mensagemSucesso(titulo: "Excluido com sucesso!", context: context);
-                                  });
+                                ao_clicar: () async {
+                                  final response = await _controladorClasse.excluirClasse(elemento);
+                                  if(response.sucesso) {
+                                    Toast.mensagemSucesso(
+                                        titulo: "Excluido com sucesso!",
+                                        context: context);
+
+                                    setState(() {
+                                      if (_controladorClasse.idController == elemento.idClasse) {
+                                        limparNomeEResetarBotao();
+                                      }
+                                      classes.remove(elemento);
+                                    });
+                                  }
+                                  else{
+                                    Toast.mensagemErro(
+                                        titulo: "Erro ao apagar o Ator",
+                                        description: "Esse elemento já está relacionado com outro...",
+                                        context: context);
+                                  }
                                 },
                                 texto: const Text("Excluir"),
                                 cor: Colors.red,

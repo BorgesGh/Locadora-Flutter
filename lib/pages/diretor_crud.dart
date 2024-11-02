@@ -151,7 +151,7 @@ class _DireitorCRUDState extends State<DiretorCRUD>{
                               ),
                               onTap: () {
                                 nomeDiretorController.text = elemento.nome;
-                                idController = elemento.id!;
+                                idController = elemento.idDiretor!;
                                 setState(() {
                                   operacao = "Editar";
                                 });
@@ -160,15 +160,26 @@ class _DireitorCRUDState extends State<DiretorCRUD>{
                             ),
                             DataCell(
                               Botao(
-                                ao_clicar: () {
-                                  setState(() {
-                                    if (idController == elemento.id) {
-                                      limparNomeEResetarBotao();
-                                    }
-                                    diretores.remove(elemento);
-                                    _controladorDiretor.excluirDiretor(elemento);
-                                    Toast.mensagemSucesso(titulo: "Excluido com sucesso!", context: context);
-                                  });
+                                ao_clicar: () async {
+                                  final response = await _controladorDiretor.excluirDiretor(elemento);
+                                  if(response.sucesso) {
+                                    Toast.mensagemSucesso(
+                                        titulo: "Excluido com sucesso!",
+                                        context: context);
+
+                                    setState(() {
+                                      if (idController == elemento.idDiretor) {
+                                        limparNomeEResetarBotao();
+                                      }
+                                      diretores.remove(elemento);
+                                    });
+                                  }
+                                  else{
+                                    Toast.mensagemErro(
+                                        titulo: "Erro ao apagar o Ator",
+                                        description: "Esse elemento já está relacionado com outro...",
+                                        context: context);
+                                  }
                                 },
                                 texto: const Text("Excluir"),
                                 cor: Colors.red,
