@@ -277,7 +277,7 @@ class _TituloCRUDState extends State<TituloCRUD>{
                           }
 
                           if (snapshot.hasError) {
-                            return Text('Erro ao carregar Diretores'); // Tratamento de erro
+                            return const Text('Erro ao carregar Titulos'); // Tratamento de erro
                           }
 
                           if (!snapshot.hasData) {
