@@ -45,7 +45,7 @@ class _ComboBoxAsyncState<T> extends State<ComboBoxAsync<T>> {
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(fontSize: 20),
                         ),
-                        Expanded(
+                        Flexible(
                           child:ComboBox(
                             value: widget.selected ,
                             items: const [],
@@ -74,18 +74,21 @@ class _ComboBoxAsyncState<T> extends State<ComboBoxAsync<T>> {
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(fontSize: 20),
                       ),
-                      Expanded(
-                        child: ComboBox<T>(
-                          isExpanded: true,
-                          placeholder: Text(widget.placeHolder),
-                          value: widget.selected,
-                          items: elementos?.map((elemento) {
-                            return ComboBoxItem<T>(
-                              value: elemento,
-                              child: Text(elemento.toString()),
-                            );
-                          }).toList(),
-                          onChanged: widget.onChange
+                      Flexible(
+                        child: Container(
+                          height: 50,
+                          child: ComboBox<T>(
+                            isExpanded: true,
+                            placeholder: Text(widget.placeHolder),
+                            value: widget.selected,
+                            items: elementos?.map((elemento) {
+                              return ComboBoxItem<T>(
+                                value: elemento,
+                                child: Text(elemento.toString()),
+                              );
+                            }).toList(),
+                            onChanged: widget.onChange
+                          ),
                         )
                       )
                     ]

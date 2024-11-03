@@ -64,14 +64,14 @@ class ControladorTitulo{
 
   }
 
-  Future<ResponseEntity<List<Titulo>>> getTitulos() async{
+  Future<List<Titulo>> getTitulos() async{
 
     ResponseEntity<List<Titulo>> responseEntity = await tituloService.getAll();
     titulos = responseEntity.resultado ?? []; // Caso o resultado venha vazio...
 
     _controladorStream.add(titulos);
 
-    return responseEntity;
+    return responseEntity.resultado!;
 
   }
 
@@ -116,8 +116,8 @@ class ControladorTitulo{
     }
   }
 
-  Future<void> excluirTitulo(Titulo titulo) async{
-    tituloService.delete(titulo);
+  Future<ResponseEntity> excluirTitulo(Titulo titulo) async{
+    return tituloService.delete(titulo);
 
   }
 

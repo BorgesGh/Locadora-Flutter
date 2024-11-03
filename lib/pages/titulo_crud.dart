@@ -340,15 +340,21 @@ class _TituloCRUDState extends State<TituloCRUD>{
                                         ),
                                         DataCell(
                                           Botao(
-                                            ao_clicar: () {
-                                              setState(() {
-                                                if (_controladorTitulo.idController == titulo.idTitulo) {
-                                                  limparNomeEResetarBotao();
-                                                }
-                                                _controladorTitulo.titulos.remove(titulo);
-                                                _controladorTitulo.excluirTitulo(titulo);
-                                                Toast.mensagemSucesso(titulo: "Excluido com sucesso!", context: context);
-                                              });
+                                            ao_clicar: () async {
+                                              final response = await _controladorTitulo.excluirTitulo(titulo);
+
+                                              if(response.sucesso){
+                                                setState(() {
+                                                  if (_controladorTitulo.idController == titulo.idTitulo) {
+                                                    limparNomeEResetarBotao();
+                                                  }
+                                                  _controladorTitulo.titulos.remove(titulo);
+                                                  Toast.mensagemSucesso(titulo: "Excluido com sucesso!", context: context);
+                                                });
+                                              }
+                                              else{
+                                                Toast.mensagemErro(context: context, titulo: "Erro ao deletar titulo", description: "O titulo atual já faz parte de um item");
+                                              }
                                             },
                                             texto: const Text("Excluir"),
                                             cor: const Color(12233333),
