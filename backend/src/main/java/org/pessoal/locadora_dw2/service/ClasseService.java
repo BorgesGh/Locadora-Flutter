@@ -20,7 +20,7 @@ public class ClasseService {
 
     public Classe update(Classe classe){
 
-        Classe clNovo = classeRepository.findById(classe.getId()).get();
+        Classe clNovo = classeRepository.findById(classe.getIdClasse()).get();
         clNovo.setNome(classe.getNome());
         clNovo.setDataDevolucao(classe.getDataDevolucao());
         clNovo.setValor(classe.getValor());

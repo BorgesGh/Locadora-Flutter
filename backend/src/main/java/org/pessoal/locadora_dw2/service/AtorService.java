@@ -21,7 +21,7 @@ public class AtorService {
 
     public Ator update(Ator ator){
 
-        Ator atNovo = atorRepository.findById(ator.getId()).get();
+        Ator atNovo = atorRepository.findById(ator.getIdAtor()).get();
         atNovo.setNome(ator.getNome());
         atorRepository.save(atNovo);
 

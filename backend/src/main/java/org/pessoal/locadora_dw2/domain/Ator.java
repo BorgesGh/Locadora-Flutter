@@ -12,7 +12,7 @@ public class Ator {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int idAtor;
 
     private String nome;
 

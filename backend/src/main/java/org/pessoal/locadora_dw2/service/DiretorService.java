@@ -20,7 +20,7 @@ public class DiretorService {
 
     public Diretor update(Diretor diretor){
 
-        Diretor dtNovo = diretorRepository.findById(diretor.getId()).get();
+        Diretor dtNovo = diretorRepository.findById(diretor.getIdDiretor()).get();
         dtNovo.setNome(diretor.getNome());
         diretorRepository.save(dtNovo);
 

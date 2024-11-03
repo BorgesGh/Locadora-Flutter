@@ -1,11 +1,8 @@
 package org.pessoal.locadora_dw2.controller;
 
 import org.pessoal.locadora_dw2.domain.Ator;
-import org.pessoal.locadora_dw2.dto.AtorDTO;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.pessoal.locadora_dw2.service.AtorService;
 
