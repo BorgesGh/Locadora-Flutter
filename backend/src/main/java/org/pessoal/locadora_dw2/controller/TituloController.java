@@ -1,5 +1,7 @@
 package org.pessoal.locadora_dw2.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.pessoal.locadora_dw2.domain.Titulo;
 import org.pessoal.locadora_dw2.service.TituloService;
 import org.springframework.http.HttpStatus;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@Tag(name = "Controlador de Titulo", description = "Controller que manipula todos os end-points de Titulo")
 public class TituloController {
 
     TituloService tituloService;
@@ -16,6 +19,7 @@ public class TituloController {
         this.tituloService = tituloService;
     }
 
+    @Operation(description = "Listagem de Titulos")
     @GetMapping("/titulo/getAll")
     public ResponseEntity<List<Titulo>> getAll() {
         try {
@@ -25,6 +29,7 @@ public class TituloController {
         }
     }
 
+    @Operation(description = "Update de um titulo alterado.")
     @PutMapping("/titulo/update")
     public ResponseEntity<Titulo> update(@RequestBody Titulo titulo) {
         try {
@@ -36,6 +41,7 @@ public class TituloController {
 
     }
 
+    @Operation(description = "Delete de um Titulo")
     @DeleteMapping("/titulo/delete")
     public ResponseEntity<String> delete(@RequestBody Titulo titulo) {
         try {
@@ -47,6 +53,7 @@ public class TituloController {
 
     }
 
+    @Operation(description = "Adição de um novo titulo")
     @PostMapping("/titulo/add")
     public ResponseEntity<Titulo> add(@RequestBody Titulo titulo) {
         try {
