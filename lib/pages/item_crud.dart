@@ -7,7 +7,7 @@ import 'package:locadora_dw2/widgets/BotaoDate.dart';
 import 'package:locadora_dw2/widgets/MeuScaffold.dart';
 import "package:fluent_ui/fluent_ui.dart";
 import 'package:locadora_dw2/widgets/local/ComboBoxAsync.dart';
-
+import 'package:intl/intl.dart';
 import '../widgets/Botao.dart';
 import '../widgets/FormArea.dart';
 import '../widgets/FormAreaNumeros.dart';
@@ -202,7 +202,7 @@ class _ItemCrudState extends State<ItemCrud> {
 
                             ),
                             DataCell(
-                              Text(item.dataAquisicao.toIso8601String()) // Trocar formatação!!
+                              Text(DateFormat('dd/MM/yyyy').format(item.dataAquisicao)) // Trocar formatação!!
                             ),
                             DataCell(
                               Text(item.tipoItem)

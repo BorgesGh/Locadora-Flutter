@@ -212,8 +212,7 @@ class _TituloCRUDState extends State<TituloCRUD>{
             SizedBox(height: space),
             Botao(
                 ao_clicar: (){
-                  if(_controladorTitulo.formKey.currentState!.validate()){
-                  // validarCampos(context);
+                  if(_controladorTitulo.formKey.currentState!.validate() && validarCampos(context)){
                     if(Operacoes.Enviar.name == _controladorTitulo.operationController){
                       setState(() {
                         _controladorTitulo.inserirTitulo(
@@ -286,83 +285,94 @@ class _TituloCRUDState extends State<TituloCRUD>{
 
                           _controladorTitulo.titulos = snapshot.data!;
 
-                          return DataTable(
-                            columns: _controladorTitulo.getColluns().map((col) {
-                              return DataColumn(
-                                  label: Text(col,
-                                    style: const TextStyle(fontSize: 18),
-                                  ),
-                                  headingRowAlignment: MainAxisAlignment.center
-                              );
-                            }).toList(),
+                          return SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: DataTable(
+                                dataRowMaxHeight: 100,
+                                columns: _controladorTitulo.getColluns().map((col) {
+                                  return DataColumn(
+                                      label: Text(col,
+                                        style: const TextStyle(fontSize: 18),
+                                      ),
+                                      headingRowAlignment: MainAxisAlignment.center
+                                  );
+                                }).toList(),
 
-                            rows:_controladorTitulo.titulos.map((titulo) {
-                                    return DataRow(
-                                      cells: [
-                                        DataCell(
-                                          Row(children: [Text(titulo.nome)]),
-                                          showEditIcon: true,
-                                          onTap: (){
-                                            setState(() {
-                                              _controladorTitulo.idController = titulo.idTitulo;
-                                              _controladorTitulo.nameTituloController.text = titulo.nome;
-                                              _controladorTitulo.yearController.text = titulo.ano.toString();
-                                              _controladorTitulo.sinopseController.text = titulo.sinopse;
-
-                                              _controladorTitulo.selectedCategoria = titulo.categoria;
-                                              _controladorTitulo.selectedClasse = titulo.classe;
-                                              _controladorTitulo.selectedDiretor = titulo.diretor;
-                                              _controladorTitulo.selectedAtors = titulo.atores;
-
-                                              _controladorTitulo.operationController = Operacoes.Editar.name;
-                                            });
-                                          }
-                                        ),
-                                        DataCell(
-                                          Text(titulo.ano.toString())
-                                        ),
-                                        DataCell(
-                                          Text(titulo.sinopse),
-                                        ),
-                                        DataCell(
-                                          Text(titulo.diretor.nome),
-                                        ),
-                                        DataCell(
-                                          Text(titulo.classe.nome),
-                                        ),
-                                        DataCell(
-                                          Text(titulo.categoria),
-                                        ),
-                                        DataCell(
-                                          Wrap(
-                                            children: titulo.atores.map((ator) => Text("${ator.nome}, ")).toList(),
-                                          )
-                                        ),
-                                        DataCell(
-                                          Botao(
-                                            ao_clicar: () async {
-                                              final response = await _controladorTitulo.excluirTitulo(titulo);
-
-                                              if(response.sucesso){
+                                rows:_controladorTitulo.titulos.map((titulo) {
+                                        return DataRow(
+                                          cells: [
+                                            DataCell(
+                                              Row(children: [Text(titulo.nome)]),
+                                              showEditIcon: true,
+                                              onTap: (){
                                                 setState(() {
-                                                  if (_controladorTitulo.idController == titulo.idTitulo) {
-                                                    limparNomeEResetarBotao();
-                                                  }
-                                                  _controladorTitulo.titulos.remove(titulo);
-                                                  Toast.mensagemSucesso(titulo: "Excluido com sucesso!", context: context);
+                                                  _controladorTitulo.idController = titulo.idTitulo;
+                                                  _controladorTitulo.nameTituloController.text = titulo.nome;
+                                                  _controladorTitulo.yearController.text = titulo.ano.toString();
+                                                  _controladorTitulo.sinopseController.text = titulo.sinopse;
+
+                                                  _controladorTitulo.selectedCategoria = titulo.categoria;
+                                                  _controladorTitulo.selectedClasse = titulo.classe;
+                                                  _controladorTitulo.selectedDiretor = titulo.diretor;
+                                                  _controladorTitulo.selectedAtors = titulo.atores;
+
+                                                  _controladorTitulo.operationController = Operacoes.Editar.name;
                                                 });
                                               }
-                                              else{
-                                                Toast.mensagemErro(context: context, titulo: "Erro ao deletar titulo", description: "O titulo atual já faz parte de um item");
-                                              }
-                                            },
-                                            texto: const Text("Excluir"),
-                                            cor: const Color(12233333),
-                                          ),
-                                        ),
-                                      ]
-                                    );
-                                  }).toList(),
+                                            ),
+                                            DataCell(
+                                              Text(titulo.ano.toString())
+                                            ),
+                                            DataCell(
+                                              Container(
+
+                                                child: Text(titulo.sinopse),
+                                                width: 100,
+                                              )
+                                            ),
+                                            DataCell(
+                                              Text(titulo.diretor.nome),
+                                            ),
+                                            DataCell(
+                                              Text(titulo.classe.nome),
+                                            ),
+                                            DataCell(
+                                              Text(titulo.categoria),
+                                            ),
+                                            DataCell(
+                                              Wrap(
+                                                children: titulo.atores.map((ator) => Text("${ator.nome}, ")).toList(),
+                                              )
+                                            ),
+                                            DataCell(
+                                              Botao(
+                                                ao_clicar: () async {
+                                                  final response = await _controladorTitulo.excluirTitulo(titulo);
+
+                                                  if(response.sucesso){
+                                                    setState(() {
+                                                      if (_controladorTitulo.idController == titulo.idTitulo) {
+                                                        limparNomeEResetarBotao();
+                                                      }
+                                                      _controladorTitulo.titulos.remove(titulo);
+                                                      Toast.mensagemSucesso(titulo: "Excluido com sucesso!", context: context);
+                                                    });
+                                                  }
+                                                  else{
+                                                    Toast.mensagemErro(context: context, titulo: "Erro ao deletar titulo", description: "O titulo atual já faz parte de um item");
+                                                  }
+                                                },
+                                                texto: const Text("Excluir"),
+                                                cor: const Color(12233333),
+                                              ),
+                                            ),
+                                          ]
+                                        );
+                                      }).toList(),
+                              ),
+                            ),
                           );
                       }
                     )
@@ -386,14 +396,16 @@ class _TituloCRUDState extends State<TituloCRUD>{
     _controladorTitulo.selectedClasse == null;
   }
 
-  void validarCampos(BuildContext context){
+  bool validarCampos(BuildContext context){
     if(_controladorTitulo.selectedAtors == [] ||
         _controladorTitulo.selectedDiretor == null ||
         _controladorTitulo.selectedCategoria == null ||
         _controladorTitulo.selectedClasse == null
     ){
       Toast.mensagemErro(context: context,titulo: "Algum campo não foi selecionado!!",description: "Verifique se todos os campos no formulário foram preenchidos");
+      return false;
     }
+    return true;
   }
 }
 

@@ -7,6 +7,7 @@ import 'package:locadora_dw2/controle/ControladorTitulo.dart';
 import 'package:locadora_dw2/model/Item.dart';
 import 'package:locadora_dw2/model/Titulo.dart';
 import 'package:locadora_dw2/service/ItemService.dart';
+import 'package:intl/intl.dart';
 
 import '../utils/ResponseEntity.dart';
 

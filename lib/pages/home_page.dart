@@ -11,24 +11,7 @@ class HomePage extends StatelessWidget{
   Widget build(BuildContext context) {
     return MeuScaffold(
       texto: "Locadora",
-      body:
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const Text("Ultimas noticias"),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(2),topRight: Radius.circular(2))
-                  ),
-                )
-              ],
-            ),
-            const Row(),
-          ],
-        )
-      );
+      body: Container()
+    );
   }
 }

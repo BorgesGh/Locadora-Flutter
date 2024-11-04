@@ -17,11 +17,11 @@ enum Routes{
 
 GoRouter goRouter(){
   return GoRouter(
-    initialLocation: "/item",
+    initialLocation: "/",
 
       routes: <RouteBase>[
         GoRoute(
-          path: "/home",
+          path: "/",
           name: Routes.Home.name,
           builder: (context, state) => HomePage(),
         ),

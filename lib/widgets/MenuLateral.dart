@@ -48,7 +48,7 @@ class MenuLateral extends StatelessWidget{
             },
           ),
           ListTile(
-            leading: const Icon(Icons.settings),
+            leading: const Icon(Icons.add_card_outlined),
             title: const Text('Titulo'),
             onTap: () {
               context.goNamed(Routes.Titulo.name);

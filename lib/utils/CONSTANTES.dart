@@ -9,4 +9,3 @@ class CONSTANTES {
 
   static const urlServer = "http://localhost:8080";
 }
-
