@@ -48,6 +48,7 @@ public class TituloController {
             tituloService.delete(titulo);
             return ResponseEntity.ok().body("Titulo deletado com sucesso!");
         }catch (Exception e) {
+
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 

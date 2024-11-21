@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.pessoal.locadora_dw2.domain.Ator;
+import org.pessoal.locadora_dw2.exceptions.ElementoJaReferenciado;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,8 +53,17 @@ public class AtorController {
     @Operation(description = "Exclusão de um ator")
     @DeleteMapping("/ator/delete")
     public ResponseEntity<String> deleteAtor(@RequestBody Ator ator){
-        atorService.delete(ator);
-        return ResponseEntity.ok().body("Ator deletado com sucesso!");
+        try {
+            atorService.delete(ator);
+            return ResponseEntity.ok().body("Ator deletado com sucesso!");
+
+        }catch (ElementoJaReferenciado e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+
     }
 
     @Operation(description = "Adição de um novo ator")

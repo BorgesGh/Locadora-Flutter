@@ -1,7 +1,9 @@
 package org.pessoal.locadora_dw2.service;
 
 import org.pessoal.locadora_dw2.domain.Ator;
+import org.pessoal.locadora_dw2.exceptions.ElementoJaReferenciado;
 import org.pessoal.locadora_dw2.repository.AtorRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,8 +30,13 @@ public class AtorService {
         return ator;
     }
 
-    public void delete(Ator ator){
-        atorRepository.delete(ator);
+    public void delete(Ator ator) throws ElementoJaReferenciado {
+        try {
+            atorRepository.delete(ator);
+        }catch (DataIntegrityViolationException e){
+            throw new ElementoJaReferenciado();
+        }
+
     }
 
     public Ator addAtor(Ator ator){
