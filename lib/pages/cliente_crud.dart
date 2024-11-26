@@ -120,7 +120,13 @@ class _ClienteCrudState extends State<ClienteCrud> {
           SizedBox(height: 20),
           fluentui.Button(
             onPressed: () async {
-              final response = await _control.inserir();
+              final response;
+
+              if (_control.idController != -1) {
+                response = await _control.atualizar();
+              } else {
+                response = await _control.inserir();
+              }
 
               if (response.sucesso) {
                 Toast.mensagemSucesso(
@@ -131,154 +137,168 @@ class _ClienteCrudState extends State<ClienteCrud> {
                     titulo: "Erro ao inserir cliente!",
                     description: response.mensagemErro.toString());
               }
+              setState(() {
+                _control.idController = -1;
+              });
             },
             child: _control.idController == -1
                 ? const Text('Inserir')
                 : const Text('Editar'),
           ),
           SizedBox(height: 20),
-          Container(
-              margin: const EdgeInsets.symmetric(horizontal: 40),
-              child: StreamBuilder<List<Cliente>>(
-                stream: _control.fluxo,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator(); // Mostra um indicador de carregamento
-                  }
+          Expanded(
+              flex: 3,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: StreamBuilder<List<Cliente>>(
+                  stream: _control.fluxo,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator(); // Mostra um indicador de carregamento
+                    }
 
-                  if (snapshot.hasError) {
-                    return const Text(
-                        'Erro ao carregar Classes'); // Tratamento de erro
-                  }
+                    if (snapshot.hasError) {
+                      return const Text(
+                          'Erro ao carregar Classes'); // Tratamento de erro
+                    }
 
-                  if (!snapshot.hasData) {
-                    return const Center(
-                        child: Text("Erro ao acessar o Backend!"));
-                  }
+                    if (!snapshot.hasData) {
+                      return const Center(
+                          child: Text("Erro ao acessar o Backend!"));
+                    }
 
-                  _control.clientes = snapshot.data!;
+                    _control.clientes = snapshot.data!;
 
-                  return DataTable(
-                    columnSpacing: 2,
-                    columns: const <DataColumn>[
-                      DataColumn(
-                        label: Text(
-                          overflow: TextOverflow.ellipsis,
-                          "Nome",
-                          style: TextStyle(fontSize: 18),
+                    return DataTable(
+                      columnSpacing: 2,
+                      columns: const <DataColumn>[
+                        DataColumn(
+                          label: Text(
+                            overflow: TextOverflow.ellipsis,
+                            "Nome",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          headingRowAlignment: MainAxisAlignment.center,
                         ),
-                        headingRowAlignment: MainAxisAlignment.center,
-                      ),
-                      DataColumn(
-                        label: Text(
-                          "Numero de Inscrição",
-                          style: TextStyle(fontSize: 18),
+                        DataColumn(
+                          label: Text(
+                            "Numero de Inscrição",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          headingRowAlignment: MainAxisAlignment.center,
                         ),
-                        headingRowAlignment: MainAxisAlignment.center,
-                      ),
-                      DataColumn(
-                        label: Text(
-                          overflow: TextOverflow.ellipsis,
-                          "Data de Nascimento",
-                          style: TextStyle(fontSize: 18),
+                        DataColumn(
+                          label: Text(
+                            overflow: TextOverflow.ellipsis,
+                            "Data de Nascimento",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          headingRowAlignment: MainAxisAlignment.center,
                         ),
-                        headingRowAlignment: MainAxisAlignment.center,
-                      ),
-                      DataColumn(
-                        label: Text(
-                          overflow: TextOverflow.ellipsis,
-                          "Sexo",
-                          style: TextStyle(fontSize: 18),
+                        DataColumn(
+                          label: Text(
+                            overflow: TextOverflow.ellipsis,
+                            "Sexo",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          headingRowAlignment: MainAxisAlignment.center,
                         ),
-                        headingRowAlignment: MainAxisAlignment.center,
-                      ),
-                      DataColumn(
-                        label: Text(
-                          overflow: TextOverflow.ellipsis,
-                          "Status",
-                          style: TextStyle(fontSize: 18),
+                        DataColumn(
+                          label: Text(
+                            overflow: TextOverflow.ellipsis,
+                            "Status",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          headingRowAlignment: MainAxisAlignment.center,
                         ),
-                        headingRowAlignment: MainAxisAlignment.center,
-                      ),
-                      DataColumn(
-                        label: Text(
-                          "Opções",
-                          style: TextStyle(fontSize: 18),
+                        DataColumn(
+                          label: Text(
+                            "Opções",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          headingRowAlignment: MainAxisAlignment.center,
                         ),
-                        headingRowAlignment: MainAxisAlignment.center,
-                      ),
-                    ],
-                    rows: _control.clientes.map((Cliente elemento) {
-                      return DataRow(
-                        cells: [
-                          DataCell(
-                            Row(
+                      ],
+                      rows: _control.clientes.map((Cliente elemento) {
+                        return DataRow(
+                          cells: [
+                            DataCell(
+                              Row(
+                                children: [
+                                  Text(elemento.nome),
+                                ],
+                              ),
+                            ),
+                            DataCell(Row(
                               children: [
-                                Text(elemento.nome),
+                                Text(elemento.numInscricao.toString()),
                               ],
-                            ),
-                            onTap: () {
-                              _control.editarCliente(elemento);
-                              setState(() {
-                                _control.idController = elemento.idCliente!;
-                              });
-                            },
-                            showEditIcon: true,
-                          ),
-                          DataCell(Row(
-                            children: [
-                              Text(elemento.numInscricao.toString()),
-                            ],
-                          )),
-                          DataCell(Row(
-                            children: [
-                              Text(elemento.dataNascimento.toString()),
-                            ],
-                          )),
-                          DataCell(Row(
-                            children: [
-                              Text(elemento.sexo.toString()),
-                            ],
-                          )),
-                          DataCell(Row(
-                            children: [
-                              Text(elemento.estahAtivo ? "Ativo" : "Inativo"),
-                            ],
-                          )),
-                          DataCell(
-                            IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: () async {
-                                final response =
-                                    await _control.deletarCliente(elemento);
-                                if (response.sucesso) {
-                                  Toast.mensagemSucesso(
-                                      titulo: "Excluido com sucesso!",
-                                      context: context);
+                            )),
+                            DataCell(Row(
+                              children: [
+                                Text(elemento.dataNascimento.toString()),
+                              ],
+                            )),
+                            DataCell(Row(
+                              children: [
+                                Text(elemento.sexo.toString()),
+                              ],
+                            )),
+                            DataCell(Row(
+                              children: [
+                                Text(elemento.estahAtivo ? "Ativo" : "Inativo"),
+                              ],
+                            )),
+                            DataCell(
+                              Row(
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.edit),
+                                    onPressed: () {
+                                      _control.editarCliente(elemento);
+                                      setState(() {
+                                        _control.idController =
+                                            elemento.idCliente!;
+                                      });
+                                    },
+                                    color: Colors.blue,
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete),
+                                    onPressed: () async {
+                                      final response = await _control
+                                          .deletarCliente(elemento);
+                                      if (response.sucesso) {
+                                        Toast.mensagemSucesso(
+                                            titulo: "Excluido com sucesso!",
+                                            context: context);
 
-                                  setState(() {
-                                    if (_control.idController ==
-                                        elemento.idCliente) {
-                                      _control.limparCampos();
-                                    }
-                                    _control.clientes.remove(elemento);
-                                  });
-                                } else {
-                                  Toast.mensagemErro(
-                                      titulo: "Erro ao apagar o Ator",
-                                      description:
-                                          "Esse elemento já está relacionado com outro...",
-                                      context: context);
-                                }
-                              },
-                              color: Colors.red,
+                                        setState(() {
+                                          if (_control.idController ==
+                                              elemento.idCliente) {
+                                            _control.limparCampos();
+                                          }
+                                          _control.clientes.remove(elemento);
+                                        });
+                                      } else {
+                                        Toast.mensagemErro(
+                                            titulo: "Erro ao apagar o Ator",
+                                            description:
+                                                "Esse elemento já está relacionado com outro...",
+                                            context: context);
+                                      }
+                                    },
+                                    color: Colors.red,
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      );
-                    }).toList(),
-                  );
-                },
+                          ],
+                        );
+                      }).toList(),
+                    );
+                  },
+                ),
               ))
         ],
       ),

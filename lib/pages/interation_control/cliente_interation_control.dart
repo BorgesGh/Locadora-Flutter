@@ -66,7 +66,8 @@ class ClienteInterationControl {
         sexo: sexoControl.text,
         estahAtivo: estahAtivoControl,
       ));
-
+      getClientes();
+      stream.add(clientes);
       return response;
     }
     return ResponseEntity.erro('Preencha todos os campos corretamente');
