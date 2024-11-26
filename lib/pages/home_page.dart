@@ -11,7 +11,7 @@ class HomePage extends StatelessWidget{
   Widget build(BuildContext context) {
     return MeuScaffold(
       texto: "Locadora",
-      body: Container()
+      child: Container()
     );
   }
 }

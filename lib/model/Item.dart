@@ -22,8 +22,6 @@ class Item{
       titulo = Titulo.fromMap(map["titulo"]);
     }catch (Exception) {
       print(Exception.toString());
-
-
     }
 
   }

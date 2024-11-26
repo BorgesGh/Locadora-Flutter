@@ -46,7 +46,7 @@ class _DireitorCRUDState extends State<DiretorCRUD>{
   Widget build(BuildContext context) {
     return MeuScaffold(
       texto: "Cadastro de Diretor",
-      body: SingleChildScrollView(
+      child: SingleChildScrollView(
         child: Column(
           children: [
             Form(

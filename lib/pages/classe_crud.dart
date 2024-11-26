@@ -48,7 +48,7 @@ class _StateClasseCRUD extends State<ClasseCRUD>{
   Widget build(BuildContext context) {
     return MeuScaffold(
       texto: "Cadastro de Classe",
-      body: SingleChildScrollView(
+      child: SingleChildScrollView(
         child: Column(
           children: [
             Form(

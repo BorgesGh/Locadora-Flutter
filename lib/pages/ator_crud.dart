@@ -47,7 +47,7 @@ class _StateAtorCRUD extends State<AtorCRUD>{
   Widget build(BuildContext context) {
     return MeuScaffold(
        texto: "Cadastro de Ator",
-       body: SingleChildScrollView(
+       child: SingleChildScrollView(
          child: Column(
            children: [
              Form(
@@ -179,7 +179,7 @@ class _StateAtorCRUD extends State<AtorCRUD>{
                                  }
                                  else{
                                    Toast.mensagemErro(
-                                       titulo: "Erro ao apagar o Ator",
+                                       titulo: response.mensagemErro!,
                                        description: "Esse elemento já está relacionado com outro...",
                                        context: context);
                                  }

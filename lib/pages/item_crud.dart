@@ -34,7 +34,7 @@ class _ItemCrudState extends State<ItemCrud> {
   Widget build(BuildContext context) {
     return MeuScaffold(
       texto: "Cadastro de Items",
-      body: Container(
+      child: Container(
         margin: const EdgeInsets.only(top: 20,left: 15,right: 15),
         child: Column(
           children: [

@@ -1,9 +1,11 @@
 import 'package:go_router/go_router.dart';
 import 'package:locadora_dw2/pages/ator_crud.dart';
 import 'package:locadora_dw2/pages/classe_crud.dart';
+import 'package:locadora_dw2/pages/cliente_crud.dart';
 import 'package:locadora_dw2/pages/diretor_crud.dart';
 import 'package:locadora_dw2/pages/home_page.dart';
 import 'package:locadora_dw2/pages/item_crud.dart';
+import 'package:locadora_dw2/pages/locacao_listar.dart';
 import 'package:locadora_dw2/pages/titulo_crud.dart';
 
 enum Routes{
@@ -12,12 +14,14 @@ enum Routes{
   Ator,
   Diretor,
   Titulo,
-  Item
+  Item,
+  LocacaoListar,
+  Cliente
 }
 
 GoRouter goRouter(){
   return GoRouter(
-    initialLocation: "/",
+    initialLocation:"/cliente",
 
       routes: <RouteBase>[
         GoRoute(
@@ -49,6 +53,16 @@ GoRouter goRouter(){
           path: "/item",
           name:Routes.Item.name,
           builder: (context, state) => const ItemCrud(),
+        ),
+        GoRoute(
+          path: "/locacaoListar",
+          name:Routes.LocacaoListar.name,
+          builder: (context, state) => const LocacaoListar(),
+        ),
+        GoRoute(
+            path: "/cliente",
+            name:Routes.Cliente.name,
+            builder: (context, state) =>  const ClienteCrud(),
         )
       ]
   );

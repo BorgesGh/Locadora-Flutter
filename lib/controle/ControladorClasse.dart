@@ -1,17 +1,12 @@
-
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:locadora_dw2/model/Classe.dart';
 
-import '../model/Classe.dart';
-import '../model/Classe.dart';
-import '../model/Classe.dart';
 import '../service/ClasseService.dart';
 import '../utils/ResponseEntity.dart';
 
-class ControladorClasse{
-
+class ControladorClasse {
   final _controladorStream = StreamController<List<Classe>>();
   final streamDate = StreamController<DateTime>();
 
@@ -27,13 +22,11 @@ class ControladorClasse{
 
   int idController = -1;
 
-
-  ControladorClasse(){
+  ControladorClasse() {
     classeService = ClasseService();
   }
 
-  Future<List<Classe>> getClasses() async{
-
+  Future<List<Classe>> getClasses() async {
     ResponseEntity<List<Classe>> responseEntity = await classeService.getAll();
 
     classes = responseEntity.resultado ?? []; // Caso o resultado venha vazio...
@@ -41,11 +34,15 @@ class ControladorClasse{
     _controladorStream.add(classes);
 
     return classes;
-
   }
 
-  Future<void> inserirClasse({required String nome, int? id, required double valor, required DateTime dataDevolucao}) async {
-    var novoClasse = Classe(idClasse: id, nome: nome, valor: valor, dataDevolucao: dataDevolucao);
+  Future<void> inserirClasse(
+      {required String nome,
+      int? id,
+      required double valor,
+      required DateTime dataDevolucao}) async {
+    var novoClasse = Classe(
+        idClasse: id, nome: nome, valor: valor, dataDevolucao: dataDevolucao);
     ResponseEntity<Classe> classe = await classeService.inserir(novoClasse);
 
     Classe? dir = classe.resultado;
@@ -53,10 +50,13 @@ class ControladorClasse{
     classes.add(dir!);
 
     _controladorStream.add(classes);
-
   }
 
-  Future<void> editarClasse({required String novoNome, required int id, required double valor, required DateTime data}) async {
+  Future<void> editarClasse(
+      {required String novoNome,
+      required int id,
+      required double valor,
+      required DateTime data}) async {
     Classe? alvo;
 
     // alvo = _Classees.map((Classe) => Classe.id == id) as Classe?;
@@ -68,7 +68,6 @@ class ControladorClasse{
     }
 
     if (alvo != null) {
-
       alvo.nome = novoNome;
       alvo.valor = valor;
       alvo.dataDevolucao = data;
@@ -82,9 +81,7 @@ class ControladorClasse{
     }
   }
 
-  Future<ResponseEntity> excluirClasse (Classe classe) async{
-
+  Future<ResponseEntity> excluirClasse(Classe classe) async {
     return classeService.delete(classe);
-
   }
 }

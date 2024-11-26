@@ -42,7 +42,7 @@ class _TituloCRUDState extends State<TituloCRUD>{
   Widget build(BuildContext context) {
     return MeuScaffold(
       texto: "Cadastro de Titulo",
-      body: Container(
+      child: Container(
         decoration: BoxDecoration(
           border: Border.all(width: 1)
         ),

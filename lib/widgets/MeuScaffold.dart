@@ -10,9 +10,10 @@ class MeuScaffold extends StatelessWidget {
   //Fazer o construtor que recebe o body e o titulo
 
   String texto = "";
-  Widget? body;
+  Widget? child;
+  FloatingActionButton? floatingActionButton;
 
-  MeuScaffold({required this.texto, this.body, super.key});
+  MeuScaffold({required this.texto, this.child, super.key, this.floatingActionButton});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,8 @@ class MeuScaffold extends StatelessWidget {
         backgroundColor: CONSTANTES.LARANJA,
       ),
       drawer: const MenuLateral(),
-      body: body,
+      body: child,
+      floatingActionButton: floatingActionButton,
     );
   }
 
